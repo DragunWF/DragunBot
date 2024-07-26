@@ -20,7 +20,7 @@ class Info(commands.Cog):
             output.append(f"- [{key}]({value})")
         return "\n".join(output)
 
-    @discord.app_commands.command(name="info", description="See information about DragunBot.")
+    @discord.app_commands.command(name="info", description="Show information about DragunBot.")
     async def execute(self, interaction: discord.Interaction):
         embed = discord.Embed(title="General Information")
         embed.set_author(
