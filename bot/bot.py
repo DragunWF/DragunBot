@@ -17,14 +17,7 @@ class Bot:
         print(f'Logged in as {Bot.client.user}!')
         await Bot.client.tree.sync()
         await Bot.client.change_presence(activity=discord.Game(name="Servant to my overlord..."))
-
-    @client.event
-    async def on_command_error(ctx, error):
-        if isinstance(error, commands.CommandInvokeError):
-            await ctx.send(f"An error occurred: {error.original}")
-        else:
-            await ctx.send(f"An error occurred: {error}")
-
+    
     async def run():
         load_dotenv()
         async with Bot.client:
