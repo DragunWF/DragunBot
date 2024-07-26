@@ -10,6 +10,9 @@ from helpers.data import DataHandler
 
 class Bot:
     intents = discord.Intents.all()
+    # Not actually going to use the command prefix. It's just
+    # a placeholder since the object requires this argument for
+    # the bot object to be instantiated.
     client = commands.Bot(command_prefix="!", intents=intents)
 
     @client.event
