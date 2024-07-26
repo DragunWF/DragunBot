@@ -16,8 +16,10 @@ class Bot:
     async def on_ready():
         print(f'Logged in as {Bot.client.user}!')
         await Bot.client.tree.sync()
-        await Bot.client.change_presence(activity=discord.Game(name="Servant to my overlord..."))
-    
+        await Bot.client.change_presence(
+            activity=discord.Activity(type=discord.ActivityType.listening,
+                                      name="to my overlord..."))
+
     async def run():
         load_dotenv()
         async with Bot.client:
