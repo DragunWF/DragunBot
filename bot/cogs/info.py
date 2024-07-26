@@ -4,20 +4,19 @@ from helpers.data import DataHandler
 
 
 class Info(commands.Cog):
-    socials = {
-        "Website": "https://dragunwf.onrender.com/",
-        "GitHub": "https://github.com/DragunWF",
-        "Itch.io": "https://dragonwf.itch.io/",
-        "CodeWars": "https://www.codewars.com/users/DragunWF",
-        "TypeRacer": "https://data.typeracer.com/pit/profile?user=dragonwf"
-    }
-
     def __init__(self, bot):
         self.bot = bot
+        self.socials = {
+            "Website": "https://dragunwf.onrender.com/",
+            "GitHub": "https://github.com/DragunWF",
+            "Itch.io": "https://dragonwf.itch.io/",
+            "CodeWars": "https://www.codewars.com/users/DragunWF",
+            "TypeRacer": "https://data.typeracer.com/pit/profile?user=dragonwf"
+        }
 
     def get_developer_socials(self) -> str:
         output = []
-        for key, value in Info.socials.items():
+        for key, value in self.socials.items():
             output.append(f"- [{key}]({value})")
         return "\n".join(output)
 
