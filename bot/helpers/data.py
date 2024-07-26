@@ -11,3 +11,7 @@ class DataHandler:
     @staticmethod
     def get_settings() -> dict:
         return DataHandler.__settings
+
+    @staticmethod
+    def get_owner_username() -> str:
+        return DataHandler.__settings["owner"]["username"]
