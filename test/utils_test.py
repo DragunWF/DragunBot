@@ -2,6 +2,8 @@ from rich import print
 import sys
 import os
 
+# TODO: Clean this up
+
 
 def add_project_root():
     # Ensure the project root is in sys.path
@@ -11,15 +13,19 @@ def add_project_root():
         sys.path.append(project_root)
 
 
-def test_file_listing():
+def test_utils():
     # Lazy loading
     from bot.helpers.utils import Utils
     print(Utils.list_files("cogs"))
 
+    COLOR_TEST_COUNT = 10
+    for i in range(COLOR_TEST_COUNT):
+        print(Utils.get_random_color())
+
 
 def run_tests():
     add_project_root()
-    test_file_listing()
+    test_utils()
 
 
 if __name__ == '__main__':
