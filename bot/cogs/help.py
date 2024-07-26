@@ -1,6 +1,8 @@
 import discord
 from discord.ext import commands
 
+from helpers.utils import Utils
+
 
 class Help(commands.Cog):
     def __init__(self, bot):
@@ -17,7 +19,8 @@ class Help(commands.Cog):
     async def execute(self, interaction: discord.Interaction):
         # TODO: Add information, make it dynamic
         try:
-            embed = discord.Embed(title="List of Commands")
+            embed = discord.Embed(title="List of Commands",
+                                  color=Utils.get_color("royal blue"))
             embed.add_field(name="Commands",
                             value=await self.generate_command_list())
             await interaction.response.send_message(embed=embed)

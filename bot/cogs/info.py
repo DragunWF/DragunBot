@@ -1,6 +1,8 @@
 import discord
 from discord.ext import commands
+
 from helpers.data import DataHandler
+from helpers.utils import Utils
 
 
 class Info(commands.Cog):
@@ -22,7 +24,8 @@ class Info(commands.Cog):
 
     @discord.app_commands.command(name="info", description="Show information about DragunBot.")
     async def execute(self, interaction: discord.Interaction):
-        embed = discord.Embed(title="General Information")
+        embed = discord.Embed(title="General Information",
+                              color=Utils.get_color("royal blue"))
         embed.set_author(
             name="DragunBot",
             icon_url="https://cdn.discordapp.com/avatars/1266325919597989888/d87657cefbef95a96176eae20f2a6d16.webp?size=128"
