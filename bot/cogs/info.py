@@ -16,8 +16,8 @@ class Info(commands.Cog):
 
     def get_developer_socials(self) -> str:
         output = []
-        for key, value in self.socials.items():
-            output.append(f"- [{key}]({value})")
+        for domain, link in self.socials.items():
+            output.append(f"- [{domain}]({link})")
         return "\n".join(output)
 
     @discord.app_commands.command(name="info", description="Show information about DragunBot.")
