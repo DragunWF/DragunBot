@@ -9,12 +9,13 @@ from helpers.data import DataHandler
 
 
 class Bot:
-    intents = discord.Intents.default()
+    intents = discord.Intents.all()
     client = commands.Bot(command_prefix="!", intents=intents)
 
     @client.event
     async def on_ready():
         print(f'Logged in as {Bot.client.user}!')
+        await Bot.client.change_presence(activity=discord.Game(name="Servant to my overlord..."))
 
     async def run():
         load_dotenv()
@@ -26,7 +27,7 @@ class Bot:
                     await Bot.client.load_extension(f"cogs.{extension}")
                     print(f'Loaded extension cogs.{extension}')
                 except Exception as err:
-                    print(f'Failed to load extension cogs.{extension}: {err}')
+                    print(f'Failed to load extension "cogs.{extension}": {err}')
             await Bot.client.start(os.environ.get("TEST"))
 
 
