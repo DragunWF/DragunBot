@@ -15,7 +15,15 @@ class Bot:
     @client.event
     async def on_ready():
         print(f'Logged in as {Bot.client.user}!')
+        await Bot.client.tree.sync()
         await Bot.client.change_presence(activity=discord.Game(name="Servant to my overlord..."))
+
+    @client.event
+    async def on_command_error(ctx, error):
+        if isinstance(error, commands.CommandInvokeError):
+            await ctx.send(f"An error occurred: {error.original}")
+        else:
+            await ctx.send(f"An error occurred: {error}")
 
     async def run():
         load_dotenv()
@@ -23,11 +31,13 @@ class Bot:
             extensions = [name.split(".")[0]  # Ignores ".py"
                           for name in Utils.list_files("cogs")]
             for extension in extensions:
+                extension_name = f'cogs.{extension}'
                 try:
-                    await Bot.client.load_extension(f"cogs.{extension}")
-                    print(f'Loaded extension cogs.{extension}')
+                    await Bot.client.load_extension(extension_name)
+                    print(f'Loaded extension "{extension_name}"')
                 except Exception as err:
-                    print(f'Failed to load extension "cogs.{extension}": {err}')
+                    print(
+                        f'Failed to load extension "{extension_name}": {err}')
             await Bot.client.start(os.environ.get("TEST"))
 
 
