@@ -5,6 +5,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 
 from helpers.utils import Utils
+from helpers.data import DataHandler
 
 
 class Bot:
@@ -21,7 +22,11 @@ class Bot:
             extensions = [name.split(".")[0]  # Ignores ".py"
                           for name in Utils.list_files("cogs")]
             for extension in extensions:
-                await Bot.client.load_extension(f"cogs.{extension}")
+                try:
+                    await Bot.client.load_extension(f"cogs.{extension}")
+                    print(f'Loaded extension cogs.{extension}')
+                except Exception as err:
+                    print(f'Failed to load extension cogs.{extension}: {err}')
             await Bot.client.start(os.environ.get("TEST"))
 
 
