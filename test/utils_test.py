@@ -19,8 +19,10 @@ def test_utils():
     print(Utils.list_files("cogs"))
 
     COLOR_TEST_COUNT = 10
+    colors = []
     for i in range(COLOR_TEST_COUNT):
-        print(Utils.get_random_color())
+        colors.append(Utils.get_random_color())
+    print(colors)
 
 
 def run_tests():
