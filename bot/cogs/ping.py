@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from helpers.utils import Utils
 
 
 class Ping(commands.Cog):
@@ -8,7 +9,17 @@ class Ping(commands.Cog):
 
     @discord.app_commands.command(name="ping", description="Check the bot's latency")
     async def execute(self, interaction: discord.Interaction):
-        await interaction.response.send_message(f"Pong! Latency is `{self.bot.latency * 1000:.2f}ms`")
+        # Temporary try and catch
+        # TODO: Find an in-built event method that auto logs exceptions from slash commands
+        try:
+            embed = discord.Embed(
+                title="🏓 Pong!",
+                description=f"Latency: `{self.bot.latency * 1000:.2f}ms`",
+                color=Utils.get_random_color()
+            )
+            await interaction.response.send_message(embed=embed)
+        except Exception as err:
+            print(err)
 
 
 async def setup(bot):
