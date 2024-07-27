@@ -22,32 +22,35 @@ class Info(commands.Cog):
             output.append(f"- [{domain}]({link})")
         return "\n".join(output)
 
-    @discord.app_commands.command(name="info", description="Show information about DragunBot.")
+    @discord.app_commands.command(name="info", description="Show information about DragunBot")
     async def execute(self, interaction: discord.Interaction):
-        embed = discord.Embed(title="General Information",
-                              color=Utils.get_color("royal blue"))
-        embed.set_author(
-            name="DragunBot",
-            icon_url="https://cdn.discordapp.com/avatars/1266325919597989888/d87657cefbef95a96176eae20f2a6d16.webp?size=128"
-        )
-        embed.add_field(
-            name="Description",
-            value="Hi there, this is a general purpose Discord bot with commands about fun, " +
-            "games, information, stats, logging, and APIs. If you want to see the list of " +
-            "commands, you can do so by typing `/help`.",
-            inline=False
-        )
-        embed.add_field(
-            name="Developer's Username",
-            value=f"This bot was developed by `{ConfigManager.get_owner_username()}`",
-            inline=False
-        )
-        embed.add_field(
-            name="Developer's Socials",
-            value=self.get_developer_socials(),
-            inline=False
-        )
-        await interaction.response.send_message(embed=embed)
+        try:
+            embed = discord.Embed(title="General Information",
+                                  color=Utils.get_color("royal blue"))
+            embed.set_author(
+                name="DragunBot",
+                icon_url="https://cdn.discordapp.com/avatars/1266325919597989888/d87657cefbef95a96176eae20f2a6d16.webp?size=128"
+            )
+            embed.add_field(
+                name="Description",
+                value="Hi there, this is a general purpose Discord bot with commands about fun, " +
+                "games, information, stats, logging, and APIs. If you want to see the list of " +
+                "commands, you can do so by typing `/help`.",
+                inline=False
+            )
+            embed.add_field(
+                name="Developer's Username",
+                value=f"This bot was developed by `{ConfigManager.get_owner_username()}`",
+                inline=False
+            )
+            embed.add_field(
+                name="Developer's Socials",
+                value=self.get_developer_socials(),
+                inline=False
+            )
+            await interaction.response.send_message(embed=embed)
+        except Exception as err:
+            print(err)
 
 
 async def setup(bot: commands.Bot):

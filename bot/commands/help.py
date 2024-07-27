@@ -15,9 +15,8 @@ class Help(commands.Cog):
             output.append(f"- `/{command.name}` - {command.description}")
         return "\n".join(output)
 
-    @discord.app_commands.command(name="help", description="Show the list of slash commands.")
+    @discord.app_commands.command(name="help", description="Show the list of slash commands")
     async def execute(self, interaction: discord.Interaction):
-        # TODO: Add information, make it dynamic
         try:
             embed = discord.Embed(title="List of Commands",
                                   color=Utils.get_color("royal blue"))
