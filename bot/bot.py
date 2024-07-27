@@ -1,10 +1,13 @@
 import asyncio
 import os
-import discord
-from discord.ext import commands
+import traceback
 from dotenv import load_dotenv
 
+import discord
+from discord.ext import commands
+
 from helpers.utils import Utils
+from helpers.debug import Debug
 from helpers.config_manager import ConfigManager
 
 
@@ -29,6 +32,7 @@ class Bot:
     async def run():
         load_dotenv()
         async with Bot.client:
+            Bot.client.tree.on_error = Debug.on_app_command_error
             await Bot.load_extensions("commands")
             await Bot.load_extensions("events")
             await Bot.client.start(os.environ.get("BOT"))
