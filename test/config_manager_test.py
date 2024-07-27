@@ -12,7 +12,7 @@ from bot.helpers.config_manager import ConfigManager
 
 def test() -> None:
     # TODO: Write a more detailed test
-    print(ConfigManager.deleted_messages_channel)
+    print(ConfigManager.deleted_messages_channel())
     print(ConfigManager.edited_messages_channel)
 
 
