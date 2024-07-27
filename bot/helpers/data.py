@@ -1,6 +1,6 @@
 import json
-from .utils import Utils
 from pathlib import Path
+from .utils import Utils
 
 
 class DataHandler:
@@ -8,10 +8,14 @@ class DataHandler:
         Path(f"{Utils.get_bot_dir_path()}/config/settings.json").read_text()
     )
 
-    @staticmethod
-    def get_settings() -> dict:
+    @property
+    def settings(self) -> dict:
         return DataHandler.__settings
 
-    @staticmethod
-    def get_owner_username() -> str:
+    @property
+    def owner_username(self) -> str:
         return DataHandler.__settings["owner"]["username"]
+
+    @property
+    def owner_id(self) -> str:
+        return DataHandler.__settings["owner"]["id"]
