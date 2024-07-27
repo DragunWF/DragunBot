@@ -1,7 +1,6 @@
 import json
 import discord
 from pathlib import Path
-from queue import LifoQueue
 
 from .utils import Utils
 
