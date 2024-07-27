@@ -32,7 +32,7 @@ class Info(commands.Cog):
         )
         embed.add_field(
             name="Description",
-            value="Hi there, this is a general purpose Discord bot with commands on fun, " +
+            value="Hi there, this is a general purpose Discord bot with commands about fun, " +
             "games, information, stats, logging, and APIs. If you want to see the list of " +
             "commands, you can do so by typing `/help`.",
             inline=False
