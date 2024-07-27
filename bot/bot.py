@@ -1,6 +1,5 @@
 import asyncio
 import os
-import traceback
 from dotenv import load_dotenv
 
 import discord
@@ -8,7 +7,6 @@ from discord.ext import commands
 
 from helpers.utils import Utils
 from helpers.debug import Debug
-from helpers.config_manager import ConfigManager
 
 
 class Bot:
