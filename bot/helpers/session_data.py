@@ -7,13 +7,13 @@ class SessionData:
     __edited_messages: dict[int, LifoQueue] = {}
 
     @staticmethod
-    def get_recent_deleted_message() -> discord.Message:
+    def get_recent_deleted_message() -> discord.Message | None:
         if not SessionData.__deleted_messages.empty():
             return SessionData.__deleted_messages.get()
         return None
 
     @staticmethod
-    def get_recent_edited_message() -> dict:
+    def get_recent_edited_message() -> dict | None:
         if not SessionData.__edited_messages.empty():
             return SessionData.__edited_messages.get()
         return None
