@@ -10,33 +10,28 @@ from helpers.data import DataHandler
 
 class Bot:
     intents = discord.Intents.all()
-    # Not actually going to use the command prefix. It's just
-    # a placeholder since the object requires this argument for
-    # the bot object to be instantiated.
     client = commands.Bot(command_prefix="!", intents=intents)
 
-    @client.event
-    async def on_ready():
-        print(f'Logged in as {Bot.client.user}!')
-        await Bot.client.tree.sync()
-        await Bot.client.change_presence(
-            activity=discord.Activity(type=discord.ActivityType.listening,
-                                      name="to my overlord..."))
+    @staticmethod
+    async def load_extensions(dir_name: str):
+        extensions = [name.split(".")[0]  # Ignores ".py"
+                      for name in Utils.list_files(dir_name)
+                      if name.endswith(".py")]
+        for extension in extensions:
+            extension_name = f'{dir_name}.{extension}'
+            try:
+                await Bot.client.load_extension(extension_name)
+                print(f'Loaded extension "{extension_name}"')
+            except Exception as err:
+                print(f'Failed to load extension "{extension_name}": {err}')
 
+    @staticmethod
     async def run():
         load_dotenv()
         async with Bot.client:
-            extensions = [name.split(".")[0]  # Ignores ".py"
-                          for name in Utils.list_files("cogs")]
-            for extension in extensions:
-                extension_name = f'cogs.{extension}'
-                try:
-                    await Bot.client.load_extension(extension_name)
-                    print(f'Loaded extension "{extension_name}"')
-                except Exception as err:
-                    print(
-                        f'Failed to load extension "{extension_name}": {err}')
-            await Bot.client.start(os.environ.get("TEST"))
+            await Bot.load_extensions("cogs")
+            await Bot.load_extensions("events")
+            await Bot.client.start(os.environ.get("BOT"))
 
 
 if __name__ == '__main__':
