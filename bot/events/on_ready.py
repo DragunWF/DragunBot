@@ -12,7 +12,7 @@ class OnReady(commands.Cog):
         await self.bot.tree.sync()
         await self.bot.change_presence(
             activity=discord.Activity(type=discord.ActivityType.listening,
-                                      name="to my overlord..."))
+                                      name="my overlord..."))
 
 
 async def setup(bot: commands.Bot):
