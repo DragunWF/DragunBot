@@ -29,7 +29,7 @@ class Bot:
     async def run():
         load_dotenv()
         async with Bot.client:
-            await Bot.load_extensions("cogs")
+            await Bot.load_extensions("commands")
             await Bot.load_extensions("events")
             await Bot.client.start(os.environ.get("BOT"))
 
