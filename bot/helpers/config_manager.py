@@ -10,26 +10,26 @@ class ConfigManager:
         Path(f"{Utils.get_bot_dir_path()}/config/settings.json").read_text()
     )
 
-    @property
-    def settings(self) -> dict:
+    @staticmethod
+    def settings() -> dict:
         return ConfigManager.__settings
 
-    @property
-    def owner_username(self) -> str:
+    @staticmethod
+    def owner_username() -> str:
         return ConfigManager.__settings["owner"]["username"]
 
-    @property
-    def owner_id(self) -> str:
+    @staticmethod
+    def owner_id() -> str:
         return ConfigManager.__settings["owner"]["id"]
 
-    @property
-    def logging_channels(self) -> dict:
+    @staticmethod
+    def logging_channels() -> dict:
         return ConfigManager.__settings["logging_channels"]
 
-    @property
-    def deleted_messages_channel(self) -> int:
-        return ConfigManager.logging_channels["deleted_messages"]
+    @staticmethod
+    def deleted_messages_channel() -> int:
+        return ConfigManager.logging_channels()["deleted_messages"]
 
-    @property
-    def edited_messages_channel(self) -> int:
-        return ConfigManager.logging_channels["edited_messages"]
+    @staticmethod
+    def edited_messages_channel() -> int:
+        return ConfigManager.logging_channels()["edited_messages"]
