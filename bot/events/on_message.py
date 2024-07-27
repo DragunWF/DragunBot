@@ -3,6 +3,7 @@ from discord.ext import commands
 
 from helpers.config_manager import ConfigManager
 from helpers.utils import Utils
+from helpers.session_data import SessionData
 
 
 class OnMessageEvents(commands.Cog):
@@ -19,6 +20,8 @@ class OnMessageEvents(commands.Cog):
     @commands.Cog.listener()
     async def on_message_delete(self, message: discord.Message) -> None:
         try:
+            SessionData.record_deleted_message(message)
+
             embed = discord.Embed(title="Deleted Message",
                                   color=Utils.get_random_color())
             embed.set_author(name=message.author.name,
@@ -26,6 +29,7 @@ class OnMessageEvents(commands.Cog):
             embed.add_field(name=f"#{message.channel.name}",
                             value=message.content)
             embed.set_footer(text=f"Guild: {message.guild.name}")
+            
             await self.bot.get_channel(ConfigManager.deleted_messages_channel()).send(embed=embed)
         except Exception as err:
             print(err)
@@ -34,6 +38,8 @@ class OnMessageEvents(commands.Cog):
     async def on_message_edit(self, before: discord.Message, after: discord.Message) -> None:
         try:
             if before.content != after.content:
+                SessionData.record_edited_message(before, after)
+
                 embed = discord.Embed(title="Edited Message",
                                       color=Utils.get_random_color())
                 embed.set_author(name=before.author.name,
@@ -41,6 +47,7 @@ class OnMessageEvents(commands.Cog):
                 embed.add_field(name="Before Edit:", value=before.content)
                 embed.add_field(name="After Edit:", value=after.content)
                 embed.set_footer(text=f"Guild: {before.guild.name}")
+
                 await self.bot.get_channel(ConfigManager.edited_messages_channel()).send(embed=embed)
         except Exception as err:
             print(err)
