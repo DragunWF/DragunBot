@@ -8,6 +8,15 @@ from discord import app_commands
 class Debug:
     @staticmethod
     def error_handler(coro):
+        """
+            Decorator to catch and log exceptions for asynchronous functions.
+
+            Args:
+                coro: The coroutine function to be decorated.
+
+            Returns:
+                The decorated function with error handling.
+        """
         @functools.wraps(coro)
         async def wrapper(*args, **kwargs):
             try:
