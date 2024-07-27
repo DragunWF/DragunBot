@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-from helpers.data import DataHandler
+from bot.helpers.config_manager import ConfigManager
 from helpers.utils import Utils
 
 
@@ -39,7 +39,7 @@ class Info(commands.Cog):
         )
         embed.add_field(
             name="Developer's Username",
-            value=f"This bot was developed by `{DataHandler.get_owner_username()}`",
+            value=f"This bot was developed by `{ConfigManager.get_owner_username()}`",
             inline=False
         )
         embed.add_field(
