@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from helpers.debug import Debug
 
 
 class OnReady(commands.Cog):
@@ -7,9 +8,11 @@ class OnReady(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener()
+    @Debug.error_handler
     async def on_ready(self):
         print(f'Logged in as {self.bot.user}!')
         await self.bot.tree.sync()
+        print("Commands synchronized")
         await self.bot.change_presence(
             activity=discord.Activity(type=discord.ActivityType.listening,
                                       name="my overlord..."))
