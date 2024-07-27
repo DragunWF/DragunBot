@@ -1,12 +1,12 @@
 import discord
 from discord.ext import commands
 
-from bot.helpers.config_manager import ConfigManager
+from helpers.config_manager import ConfigManager
 from helpers.utils import Utils
 
 
 class Info(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.socials = {
             "Website": "https://dragunwf.onrender.com/",
@@ -50,5 +50,5 @@ class Info(commands.Cog):
         await interaction.response.send_message(embed=embed)
 
 
-async def setup(bot):
+async def setup(bot: commands.Bot):
     await bot.add_cog(Info(bot))

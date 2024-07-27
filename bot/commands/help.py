@@ -5,7 +5,7 @@ from helpers.utils import Utils
 
 
 class Help(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
     async def generate_command_list(self) -> str:
@@ -28,5 +28,5 @@ class Help(commands.Cog):
             print(err)
 
 
-async def setup(bot):
+async def setup(bot: commands.Bot):
     await bot.add_cog(Help(bot))

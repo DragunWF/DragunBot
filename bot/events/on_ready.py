@@ -3,7 +3,7 @@ from discord.ext import commands
 
 
 class OnReady(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
     @commands.Cog.listener()
@@ -15,5 +15,5 @@ class OnReady(commands.Cog):
                                       name="to my overlord..."))
 
 
-async def setup(bot):
+async def setup(bot: commands.Bot):
     await bot.add_cog(OnReady(bot))

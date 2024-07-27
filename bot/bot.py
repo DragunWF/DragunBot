@@ -5,7 +5,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 
 from helpers.utils import Utils
-from helpers.data import DataHandler
+from helpers.config_manager import ConfigManager
 
 
 class Bot:

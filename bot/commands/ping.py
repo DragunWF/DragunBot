@@ -4,7 +4,7 @@ from helpers.utils import Utils
 
 
 class Ping(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
     @discord.app_commands.command(name="ping", description="Check the bot's latency")
@@ -22,5 +22,5 @@ class Ping(commands.Cog):
             print(err)
 
 
-async def setup(bot):
+async def setup(bot: commands.Bot):
     await bot.add_cog(Ping(bot))
