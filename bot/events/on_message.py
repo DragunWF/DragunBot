@@ -62,8 +62,8 @@ class OnMessage(commands.Cog):
                                   color=Utils.get_random_color())
             embed.set_author(name=before.author.name,
                              icon_url=before.author.avatar.url)
-            embed.add_field(name="Before Edit:", value=before.content)
-            embed.add_field(name="After Edit:", value=after.content)
+            embed.add_field(name="Before Edit", value=before.content)
+            embed.add_field(name="After Edit", value=after.content)
             embed.set_footer(text=f"Guild: {before.guild.name}")
 
             await self.bot.get_channel(ConfigManager.edited_messages_channel()).send(embed=embed)
