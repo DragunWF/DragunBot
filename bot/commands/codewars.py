@@ -9,7 +9,7 @@ class CodeWars(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.data: dict = None
-        self.languages: dict = None
+        self.languages: dict[str, dict] = None
 
     def get_most_used_language(self) -> str:
         most_used, max_score = None, 0
