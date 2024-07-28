@@ -1,3 +1,4 @@
+import logging
 import discord
 from discord.ext import commands
 
@@ -10,19 +11,35 @@ from helpers.debug import Debug
 class OnMessageEvents(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
+        self.last_guild: str = None
+        self.last_channel: str = None
+
+    def message_log(self, text: str):
+        print(f"<MESSAGE LOG> {text}")
+
+    def log_message_location(self, message: discord.Message):
+        if message.guild.name != self.last_guild:
+            self.message_log(f"Guild: {message.guild.name}")
+            self.last_guild = message.guild.name
+        if message.channel.name != self.last_channel:
+            self.message_log(f"Channel: #{message.channel.name}")
+            self.last_channel = message.channel.name
 
     @commands.Cog.listener()
     @Debug.error_handler
     async def on_message(self, message: discord.Message) -> None:
         if message.author.bot:
             return
-        print(f'Message from {message.author}: {message.content}')
+        self.log_message_location(message)
+        self.message_log(f'[{message.author}]: {message.content}')
         await self.bot.process_commands(message)
 
     @commands.Cog.listener()
     @Debug.error_handler
     async def on_message_delete(self, message: discord.Message) -> None:
         SessionData.record_deleted_message(message)
+        self.log_message_location(message)
+        self.message_log(f"[{message.author}] (Deleted Message): {message.content}")
 
         embed = discord.Embed(title="Deleted Message",
                               color=Utils.get_random_color())
@@ -39,6 +56,8 @@ class OnMessageEvents(commands.Cog):
     async def on_message_edit(self, before: discord.Message, after: discord.Message) -> None:
         if before.content != after.content:
             SessionData.record_edited_message(before, after)
+            self.log_message_location(before)
+            self.message_log(f"[{after.author.name}] (Edited Message): {after.content}")
 
             embed = discord.Embed(title="Edited Message",
                                   color=Utils.get_random_color())
