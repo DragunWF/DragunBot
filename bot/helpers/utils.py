@@ -1,3 +1,4 @@
+import logging
 import random
 import re
 from pathlib import Path
@@ -31,7 +32,7 @@ class Utils:
             files = [f.name for f in path.iterdir() if f.is_file()]
             return files
         except FileNotFoundError:
-            print(f"The directory {directory} does not exist.")
+            logging.error(f"The directory {directory} does not exist.")
             return []
 
     @staticmethod
@@ -60,5 +61,5 @@ class Utils:
 
     @staticmethod
     def get_random_color() -> int:
-        color_keys = tuple(Utils.__colors.keys())
-        return Utils.__colors[color_keys[random.randint(0, len(color_keys)) - 1]]
+        COLOR_KEYS = tuple(Utils.__colors.keys())
+        return Utils.__colors[COLOR_KEYS[random.randint(0, len(COLOR_KEYS)) - 1]]
