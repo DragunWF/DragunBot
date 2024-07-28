@@ -17,14 +17,11 @@ class Help(commands.Cog):
 
     @discord.app_commands.command(name="help", description="Show the list of slash commands")
     async def execute(self, interaction: discord.Interaction):
-        try:
-            embed = discord.Embed(title="List of Commands",
-                                  color=Utils.get_color("royal blue"))
-            embed.add_field(name="Commands",
-                            value=await self.generate_command_list())
-            await interaction.response.send_message(embed=embed)
-        except Exception as err:
-            print(err)
+        embed = discord.Embed(title="List of Commands",
+                              color=Utils.get_color("royal blue"))
+        embed.add_field(name="Commands",
+                        value=await self.generate_command_list())
+        await interaction.response.send_message(embed=embed)
 
 
 async def setup(bot: commands.Bot):
