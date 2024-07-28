@@ -11,6 +11,7 @@ class Confess(commands.Cog):
     @discord.app_commands.command(name="setup confession channel",
                                   description="Setup a confessions channel. Type this command in the channel you want to designate the confessions channel to")
     async def setup(self, interaction: discord.Interaction):
+        channel_id = interaction.channel_id
         await interaction.response.send_message("")
 
     @discord.app_commands.command(name="confess", description="Submit a confession")
