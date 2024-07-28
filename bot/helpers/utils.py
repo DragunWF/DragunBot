@@ -12,8 +12,6 @@ class Utils:
         "blue": 0x0000FF,
         "purple": 0x800080,
         "pink": 0xFFC0CB,
-        "gray": 0x808080,
-        "black": 0x000000,
         "white": 0xFFFFFF,
         "dark red": 0x8B0000,
         "light coral": 0xF08080,
