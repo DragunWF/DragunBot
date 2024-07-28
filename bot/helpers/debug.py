@@ -28,7 +28,7 @@ class Debug:
                     err,  # The actual exception instance
                     err.__traceback__  # The traceback object
                 ))
-                logging.error(f'Error in {coro.__name__}:\n{TB_STR}')
+                logging.error(f'{coro.__name__}:\n{TB_STR}')
         return wrapper
 
     @staticmethod
@@ -40,4 +40,4 @@ class Debug:
             err,
             err.__traceback__
         ))
-        logging.error(f'Error in command "{interaction.command.name}": {TB_STR}')
+        logging.error(f'"{interaction.command.name}": {TB_STR}')
