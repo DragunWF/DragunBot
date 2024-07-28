@@ -1,4 +1,5 @@
 import random
+import re
 from pathlib import Path
 
 
@@ -41,6 +42,16 @@ class Utils:
         while directories[-1] != "bot":
             directories.pop()
         return "\\".join(directories)
+
+    @staticmethod
+    def format_num(num: int | float) -> str:
+        """
+            Formats number into a comma-separated format. Example:
+            - 1000 -> 1,000
+            - 1000000 -> 1,000,000
+        """
+        assert type(num) is int or type(num) is float  # DBC Design
+        return re.sub(r"(\d)(?=(\d{3})+(?!\d))", r"\1,", str(num))
 
     @staticmethod
     def get_color(color: str) -> int:
