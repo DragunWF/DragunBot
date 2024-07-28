@@ -1,5 +1,6 @@
 import asyncio
 import os
+import logging
 from dotenv import load_dotenv
 
 import discord
@@ -14,6 +15,19 @@ class Bot:
     client = commands.Bot(command_prefix="!", intents=intents)
 
     @staticmethod
+    def configure_bot():
+        # Sets the method/function that gets called whenever an error occurs on a command
+        Bot.client.tree.on_error = Debug.on_app_command_error
+
+        # TODO: Implement logging into file
+        LOG_FILE_LOCATION = "logs/basic.log"
+        logging.basicConfig(
+            level=logging.INFO,
+            format="%(asctime)s %(levelname)s %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S",
+        )
+
+    @staticmethod
     async def load_extensions(dir_name: str):
         extensions = [name.split(".")[0]  # Ignores ".py"
                       for name in Utils.list_files(dir_name)
@@ -22,15 +36,16 @@ class Bot:
             extension_name = f'{dir_name}.{extension}'
             try:
                 await Bot.client.load_extension(extension_name)
-                print(f'Loaded extension "{extension_name}"')
+                logging.info(f'Loaded extension "{extension_name}"')
             except Exception as err:
-                print(f'Failed to load extension "{extension_name}": {err}')
+                logging.error(
+                    f'Failed to load extension "{extension_name}": {err}')
 
     @staticmethod
     async def run():
         load_dotenv()
         async with Bot.client:
-            Bot.client.tree.on_error = Debug.on_app_command_error
+            Bot.configure_bot()
             await Bot.load_extensions("commands")
             await Bot.load_extensions("events")
             await Bot.client.start(os.environ.get("BOT"))
