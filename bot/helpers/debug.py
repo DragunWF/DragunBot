@@ -17,6 +17,9 @@ class Debug:
 
             Returns:
                 The decorated function with error handling.
+
+            This decorator is primarily for events because events don't have an
+            in-built error handler method within discord.py 
         """
         @functools.wraps(coro)
         async def wrapper(*args, **kwargs):
