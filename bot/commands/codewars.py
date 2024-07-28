@@ -8,16 +8,19 @@ from helpers.utils import Utils
 class CodeWars(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.data = None
+        self.data: dict = None
+        self.languages: dict = None
 
     def get_most_used_language(self) -> str:
-        languages: dict = self.data["ranks"]["languages"]
         most_used, max_score = None, 0
-        for language, attributes in languages.items():
+        for language, attributes in self.languages.items():
             if attributes["score"] > max_score:
                 most_used = language.capitalize()
                 max_score = attributes["score"]
         return most_used
+
+    def get_languages(self) -> str:
+        return [language for language in self.languages]
 
     def mono(self, text: str) -> str:
         return f"`{text}`"  # Turns text into monospace via Discord markdown
@@ -33,7 +36,8 @@ class CodeWars(commands.Cog):
                                                     ephemeral=True)
             return
 
-        self.data: dict = response.json()
+        self.data = response.json()
+        self.languages = self.data["ranks"]["languages"]
         embed = discord.Embed(title=f"CodeWars Stats",
                               color=Utils.get_color("red"))
         embed.add_field(name="Username",
@@ -48,9 +52,10 @@ class CodeWars(commands.Cog):
                         value=self.mono(Utils.format_num(self.data["codeChallenges"]["totalCompleted"])))
         embed.add_field(name="Most Used",
                         value=self.mono(self.get_most_used_language()))
-        embed.add_field(name="Clan", value=self.mono(self.data["clan"]))
-        embed.add_field(name="Skills",
-                        value=", ".join(self.data["skills"]),
+        embed.add_field(name="Clan",
+                        value=self.mono(self.data["clan"] if self.data["clan"] else "None"))
+        embed.add_field(name="Programming Languages",
+                        value=", ".join(self.get_languages()),
                         inline=False)
         embed.add_field(name="Profile Link",
                         value=f"https://www.codewars.com/users/{username}",
