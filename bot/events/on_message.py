@@ -8,7 +8,7 @@ from helpers.session_data import SessionData
 from helpers.debug import Debug
 
 
-class OnMessageEvents(commands.Cog):
+class OnMessage(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
         self.last_guild: str = None
@@ -71,4 +71,4 @@ class OnMessageEvents(commands.Cog):
 
 
 async def setup(bot: commands.Bot) -> None:
-    await bot.add_cog(OnMessageEvents(bot))
+    await bot.add_cog(OnMessage(bot))
