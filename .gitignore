@@ -1,5 +1,5 @@
 __pycache__
 dump
 .env
-bot/logs
+logs
 .DS_STORE
