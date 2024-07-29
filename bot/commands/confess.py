@@ -23,7 +23,7 @@ class Confess(commands.Cog):
             await interaction.response.send_message("You must be an admin to use this command!")
             return
 
-        embed = discord.Embed(title="Confessions Channel has been setup!",
+        embed = discord.Embed(title="Confessions channel has been setup!",
                               color=Utils.get_color("royal blue"))
         embed.add_field(name="Command to send a confession",
                         value="`/confess`", inline=False)
