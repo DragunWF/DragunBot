@@ -3,6 +3,9 @@
     "id": 408972598798450688,
     "username": "dragunwf"
   },
+  "development": {
+    "test_mode": false
+  },
   "bot": {
     "id": 1266325919597989888,
     "name": "DragunBot",
