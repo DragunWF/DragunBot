@@ -41,13 +41,12 @@ class Bot:
                       for name in Utils.list_files(dir_name)
                       if name.endswith(".py")]
         for extension in extensions:
-            extension_name = f'{dir_name}.{extension}'
+            cog_name = f'{dir_name}.{extension}'
             try:
-                await Bot.client.load_extension(extension_name)
-                logging.info(f'Loaded extension "{extension_name}"')
+                await Bot.client.load_extension(cog_name)
+                logging.info(f'Loaded extension "{cog_name}"')
             except Exception as err:
-                logging.error(
-                    f'Failed to load extension "{extension_name}": {err}')
+                logging.error(f'Failed to load extension "{cog_name}": {err}')
 
     @staticmethod
     async def run():
