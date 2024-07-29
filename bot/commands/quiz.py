@@ -63,7 +63,7 @@ class TriviaButton(discord.ui.Button):
 
     async def callback(self, interaction: discord.Interaction):
         if self.label == self.correct_answer:
-            await interaction.response.send_message("Congrats, you got the question right!")
+            await interaction.response.send_message(f"**{self.label}** is indeed correct! Congrats, you got the question right")
         else:
             await interaction.response.send_message(f"**{self.label}** is wrong! The correct answer was **{self.correct_answer}**")
 
