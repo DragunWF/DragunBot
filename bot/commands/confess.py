@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands
 
 from helpers.utils import Utils
+from helpers.config_manager import ConfigManager
 
 
 class Confess(commands.Cog):
@@ -21,7 +22,25 @@ class Confess(commands.Cog):
         if not interaction.user.guild_permissions.administrator:
             await interaction.response.send_message("You must be an admin to use this command!")
             return
-        await interaction.response.send_message("Confessions channel has been set up!")
+
+        embed = discord.Embed(title="Confessions Channel has been setup!",
+                              color=Utils.get_color("royal blue"))
+        embed.add_field(name="Command to send a confession",
+                        value="`/confess`", inline=False)
+        embed.add_field(name="Description",
+                        value=(
+                            "To send a confession, simply type `/confess`. Your confessions remain entirely private; "
+                            "even the bot's developer cannot see who sent a confession. "
+                            "For complete transparency, you can review the bot's source code (linked below) "
+                            "to verify that all confessions are truly anonymous."
+                        ))
+        embed.add_field(name="Source Code",
+                        value=ConfigManager.bot_source_code(), inline=False)
+        embed.set_footer(
+            text="☄️ If you have any suggestions for this feature; please message the developer, dragunwf."
+        )
+        await self.bot.get_channel(self.channel_id).send(embed=embed)
+        await interaction.response.send_message(f"<#{self.channel_id}> has been set up as the confessions channel!")
 
     @discord.app_commands.command(name="confess", description="Submit a confession")
     @discord.app_commands.describe(message="The contents of your confession")
@@ -41,7 +60,8 @@ class Confess(commands.Cog):
                               description=f'"{message}"',
                               color=Utils.get_random_color())
         embed.set_footer(
-            text=f"{self.get_random_emoji()} If you want to send your own confession, simply type /confess")
+            text=f"{self.get_random_emoji()} If you want to send your own confession, simply type /confess"
+        )
         await channel.send(embed=embed)
         await interaction.response.send_message("Your confession has been sent!", ephemeral=True)
 
