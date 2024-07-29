@@ -8,6 +8,7 @@ from discord.ext import commands
 
 from helpers.utils import Utils
 from helpers.debug import Debug
+from helpers.server import Server
 
 
 class Bot:
@@ -50,13 +51,18 @@ class Bot:
 
     @staticmethod
     async def run():
+        # server = Server()
         load_dotenv()
         async with Bot.client:
             Bot.configure_bot()
+            # server.keep_alive()
             await Bot.load_extensions("commands")
             await Bot.load_extensions("events")
             await Bot.client.start(os.environ.get("BOT"))
 
 
 if __name__ == '__main__':
-    asyncio.run(Bot.run())
+    try:
+        asyncio.run(Bot.run())
+    except KeyboardInterrupt:
+        logging.info("Bot was stopped by user.")
