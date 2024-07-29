@@ -26,7 +26,7 @@ class CodeWars(commands.Cog):
         return f"`{text}`"  # Turns text to monospace font via Discord markdown
 
     @discord.app_commands.command(name="codewars", description="Display the stats of a given user")
-    @discord.app_commands.describe(username="The username of the CodeWars account you to see that stats of")
+    @discord.app_commands.describe(username="The username of the CodeWars account")
     async def execute(self, interaction: discord.Interaction, username: str):
         url = f"https://www.codewars.com/api/v1/users/{username}"
         response = requests.get(url)
