@@ -28,7 +28,7 @@ class Info(commands.Cog):
                               color=Utils.get_color("royal blue"))
         embed.set_author(
             name="DragunBot",
-            icon_url="https://cdn.discordapp.com/avatars/1266325919597989888/d87657cefbef95a96176eae20f2a6d16.webp?size=128"
+            icon_url=ConfigManager.bot_icon_url()
         )
         embed.add_field(
             name="Description",
