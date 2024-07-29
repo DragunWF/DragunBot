@@ -9,6 +9,7 @@ from discord.ext import commands
 from helpers.utils import Utils
 from helpers.debug import Debug
 from helpers.server import Server
+from helpers.config_manager import ConfigManager
 
 
 class Bot:
@@ -51,11 +52,12 @@ class Bot:
 
     @staticmethod
     async def run():
-        # server = Server()
+        server = Server()
         load_dotenv()
         async with Bot.client:
             Bot.configure_bot()
-            # server.keep_alive()
+            if not ConfigManager.is_test_mode():
+                server.keep_alive()
             await Bot.load_extensions("commands")
             await Bot.load_extensions("events")
             await Bot.client.start(os.environ.get("BOT"))
