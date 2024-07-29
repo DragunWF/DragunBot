@@ -32,7 +32,7 @@ class Utils:
             files = [f.name for f in path.iterdir() if f.is_file()]
             return files
         except FileNotFoundError:
-            logging.error(f"The directory {directory} does not exist.")
+            logging.error(f'The directory "{directory}" does not exist.')
             return []
 
     @staticmethod

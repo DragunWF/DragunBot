@@ -8,7 +8,7 @@ class Confess(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @discord.app_commands.command(name="setup confession channel",
+    @discord.app_commands.command(name="setup confessions",
                                   description="Setup a confessions channel. Type this command in the channel you want to designate the confessions channel to")
     async def setup(self, interaction: discord.Interaction):
         channel_id = interaction.channel_id
