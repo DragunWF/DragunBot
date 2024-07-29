@@ -65,7 +65,7 @@ class TriviaButton(discord.ui.Button):
         if self.label == self.correct_answer:
             await interaction.response.send_message("Congrats, you got the question right!")
         else:
-            await interaction.response.send_message(f"Wrong! The correct answer was **{self.correct_answer}**")
+            await interaction.response.send_message(f"**{self.label}** is wrong! The correct answer was **{self.correct_answer}**")
 
         self.view.disable_all_buttons()
         await interaction.message.edit(view=self.view)
