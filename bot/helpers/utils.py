@@ -50,6 +50,8 @@ class Utils:
             - 1000000 -> 1,000,000
         """
         assert type(num) is int or type(num) is float  # DBC Design
+        if num < 1000:
+            return str(num)
         return re.sub(r"(\d)(?=(\d{3})+(?!\d))", r"\1,", str(num))
 
     @staticmethod
