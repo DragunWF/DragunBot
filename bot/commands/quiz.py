@@ -1,6 +1,7 @@
 import requests
 import random
 import discord
+import html
 from discord.ext import commands
 
 from helpers.utils import Utils
@@ -36,7 +37,9 @@ class Quiz(commands.Cog):
         if data is None:
             await interaction.response.send_message("Failed to fetch trivia question data. Please try again later!")
             return
-        options = [*data["incorrect_answers"], data["correct_answer"]]
+        CORRECT_ANSWER = html.unescape(data["correct_answer"])
+        options = [*[html.unescape(answer) for answer in data["incorrect_answers"]],
+                   CORRECT_ANSWER]
         random.shuffle(options)
 
         embed = discord.Embed(title="Trivia Question",
@@ -44,10 +47,12 @@ class Quiz(commands.Cog):
         embed.add_field(name="Difficulty",
                         value=data["difficulty"].capitalize())
         embed.add_field(name="Category", value=data["category"])
-        embed.add_field(name="Question", value=data["question"], inline=False)
+        embed.add_field(name="Question",
+                        value=html.unescape(data["question"]),
+                        inline=False)
         embed.set_footer(text=f"Data fetched from {self.API_URL}")
         await interaction.response.send_message(embed=embed,
-                                                view=TriviaView(data["correct_answer"],
+                                                view=TriviaView(CORRECT_ANSWER,
                                                                 options))
 
 
@@ -60,7 +65,7 @@ class TriviaButton(discord.ui.Button):
         if self.label == self.correct_answer:
             await interaction.response.send_message("Congrats, you got the question right!")
         else:
-            await interaction.response.send_message(f"Wrong! The correct answer was {self.correct_answer}")
+            await interaction.response.send_message(f"Wrong! The correct answer was **{self.correct_answer}**")
 
         self.view.disable_all_buttons()
         await interaction.message.edit(view=self.view)
