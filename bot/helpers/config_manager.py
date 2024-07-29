@@ -35,6 +35,10 @@ class ConfigManager:
         return ConfigManager.logging_channels()["edited_messages"]
 
     @staticmethod
+    def bot_name() -> str:
+        return ConfigManager.__settings["bot"]["name"]
+
+    @staticmethod
     def bot_icon_url() -> str:
         return ConfigManager.__settings["bot"]["icon_url"]
 
