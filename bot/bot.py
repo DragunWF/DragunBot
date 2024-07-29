@@ -54,9 +54,9 @@ class Bot:
     async def run():
         server = Server()
         load_dotenv()
+        Bot.configure_bot()
         async with Bot.client:
-            Bot.configure_bot()
-            if not ConfigManager.is_test_mode():
+            if not ConfigManager.is_test_mode():  # To stop the bot more conviently when shutting down
                 server.keep_alive()
             await Bot.load_extensions("commands")
             await Bot.load_extensions("events")
