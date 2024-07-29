@@ -3,6 +3,13 @@
     "id": 408972598798450688,
     "username": "dragunwf"
   },
+  "bot": {
+    "id": 1266325919597989888,
+    "name": "DragunBot",
+    "username": "DragunBot#8274",
+    "icon_url": "https://cdn.discordapp.com/avatars/1266325919597989888/d87657cefbef95a96176eae20f2a6d16.webp?size=128",
+    "source_code": "https://github.com/DragunWF/DragunBot"
+  },
   "guilds": {
     "dragun_castle": 440134996984856577,
     "dragun_lab": 414052037580554251,
