@@ -1,5 +1,11 @@
+# Cache Files & Directories
 __pycache__
-dump
-.env
-logs
 .DS_STORE
+
+# Environment Files & Directories
+.env
+venv
+
+# Miscellaneous Files & Directories
+logs
+dump
