@@ -45,3 +45,7 @@ class ConfigManager:
     @staticmethod
     def bot_source_code() -> str:
         return ConfigManager.__settings["bot"]["source_code"]
+
+    @staticmethod
+    def is_test_mode() -> bool:
+        return ConfigManager.__settings["development"]["test_mode"]
