@@ -11,6 +11,7 @@ class Confess(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.footer_emojis = ("🪐", "☄️", "💫", "❄️", "✨")
+        self.headers = ("Anonymous", "Secret", "Mystery")
 
     @discord.app_commands.command(name="setup_confessions",
                                   description="Setup a confessions channel. Enter this command in the channel you want to designate")
@@ -58,7 +59,7 @@ class Confess(commands.Cog):
             return
 
         # Send the confession message to the specified channel
-        embed = discord.Embed(title="Anonymous Confession",
+        embed = discord.Embed(title=f"{random.choice(self.headers)} Confession (#{DatabaseHelper.get_confessions_count(interaction.guild_id) + 1})",
                               description=f'"{message}"',
                               color=Utils.get_random_color())
         embed.set_footer(
