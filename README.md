@@ -36,6 +36,7 @@ pipenv requirements > requirements.txt
 {
   "guilds": {
     "guild_id": {
+      "guild_name": "name of the guild",
       "counting_channel": "channel_id",
       "confessions_channel": "channel_id",
       "confessions": {
