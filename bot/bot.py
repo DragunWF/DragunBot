@@ -10,6 +10,7 @@ from helpers.utils import Utils
 from helpers.debug import Debug
 from helpers.server import Server
 from helpers.config_manager import ConfigManager
+from helpers.database_helper import DatabaseHelper
 
 
 class Bot:
@@ -56,6 +57,7 @@ class Bot:
         load_dotenv()
         Bot.configure_bot()
         async with Bot.client:
+            DatabaseHelper.start_database()
             if not ConfigManager.is_test_mode():  # To stop the bot more conviently when shutting down
                 server.keep_alive()
             await Bot.load_extensions("commands")
