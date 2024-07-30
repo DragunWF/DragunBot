@@ -4,18 +4,18 @@ from discord.ext import commands
 
 from helpers.utils import Utils
 from helpers.config_manager import ConfigManager
+from helpers.database_helper import DatabaseHelper
 
 
 class Confess(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.channel_id = None
         self.footer_emojis = ("🪐", "☄️", "💫", "❄️", "✨")
 
     @discord.app_commands.command(name="setup_confessions",
                                   description="Setup a confessions channel. Enter this command in the channel you want to designate")
     async def setup(self, interaction: discord.Interaction):
-        self.channel_id = interaction.channel_id
+        channel_id = interaction.channel_id
         if not interaction.user.guild_permissions.administrator:
             await interaction.response.send_message("You must be an admin to use this command!")
             return
@@ -36,18 +36,22 @@ class Confess(commands.Cog):
         embed.set_footer(
             text="☄️ If you have any suggestions for this feature; please message the developer, dragunwf."
         )
-        await self.bot.get_channel(self.channel_id).send(embed=embed)
-        await interaction.response.send_message(f"<#{self.channel_id}> has been set up as the confessions channel!")
+        DatabaseHelper.set_confessions_channel(interaction.guild_id, channel_id)
+        await self.bot.get_channel(channel_id).send(embed=embed)
+        await interaction.response.send_message(f"<#{channel_id}> has been set up as the confessions channel!")
 
     @discord.app_commands.command(name="confess", description="Submit a confession")
     @discord.app_commands.describe(message="The contents of your confession")
     async def confess(self, interaction: discord.Interaction, message: str):
-        if self.channel_id is None:
+        channel_id = DatabaseHelper.get_confessions_channel(
+            interaction.guild_id
+        )
+        if channel_id is None:
             await interaction.response.send_message("Confessions channel has not been set up yet for this guild. Please use `/setup_confessions` first if you're an admin.")
             return
 
         # Fetch the channel using the stored channel ID
-        channel = self.bot.get_channel(self.channel_id)
+        channel = self.bot.get_channel(channel_id)
         if channel is None:
             await interaction.response.send_message("Failed to find the confessions channel. Please set it up again.")
             return
