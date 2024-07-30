@@ -8,7 +8,7 @@ from firebase_admin import db, credentials
 
 class DatabaseHelper:
     __database_started = False
-    __GUILDS_KEY = "/guilds"
+    __GUILDS = "/guilds"
 
     @staticmethod
     def start_database():
@@ -32,20 +32,44 @@ class DatabaseHelper:
         logging.info("Successfully connected to Realtime Firebase Database")
 
     @staticmethod
-    def add_guild(guild_id: int):
-        db.reference(DatabaseHelper.__GUILDS_KEY).child(str(guild_id)).set({
+    def add_guild(guild_name: str, guild_id: int):
+        db.reference(DatabaseHelper.__GUILDS).child(str(guild_id)).set({
+            "guild_name": guild_name,
             "counting_channel": -1,
             "confessions_channel": -1,
-            "confessions": ""
+            "confessions": -1
         })
         logging.info(f"Added guild <{guild_id}> to database")
+
+    @staticmethod
+    def is_guild_exists(guild_id: int) -> bool:
+        return str(guild_id) in db.reference(DatabaseHelper.__GUILDS).get()
+
+    @staticmethod
+    def set_confessions_channel(guild_id: int, channel_id: int):
+        assert type(channel_id) is int
+        assert type(guild_id) is int
+        db.reference(
+            f"{DatabaseHelper.__GUILDS}/{guild_id}").child("confessions_channel").set(
+            str(channel_id)
+        )
+
+    @staticmethod
+    def get_confessions_channel(guild_id: int) -> int | None:
+        assert type(guild_id) is int
+        channel_id = db.reference(
+            f"{DatabaseHelper.__GUILDS}/{guild_id}/confessions_channel"
+        ).get()
+        if channel_id == -1:
+            return None
+        return int(channel_id)
 
     @staticmethod
     def add_confession(message: discord.Message):
         assert type(message) is discord.Message
         assert DatabaseHelper.is_guild_exists(message.guild.id)
 
-        ref = f"{DatabaseHelper.__GUILDS_KEY}/{message.guild.id}/confessions"
+        ref = f"{DatabaseHelper.__GUILDS}/{message.guild.id}/confessions"
         confession_count = len(db.reference(ref).get())
         db.reference(ref).child(str(confession_count + 1)).set({
             "author_id": str(message.author.id),
@@ -53,7 +77,3 @@ class DatabaseHelper:
             "content": message.content
         })
         logging.info(f"Added confession by {message.author.name} to database")
-
-    @staticmethod
-    def is_guild_exists(guild_id: int) -> bool:
-        return str(guild_id) in db.reference(DatabaseHelper.__GUILDS_KEY).get()
