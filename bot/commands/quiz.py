@@ -1,8 +1,10 @@
 import requests
 import random
-import discord
 import html
+
+import discord
 from discord.ext import commands
+from discord import app_commands
 
 from helpers.utils import Utils
 
@@ -36,10 +38,10 @@ class Quiz(commands.Cog):
             32  # Entertainment: Cartoon & Animations
         ]
 
-    def get_trivia_question(self) -> dict | None:
+    def get_trivia_question(self, category: int | None) -> dict | None:
         response = requests.get(self.API_URL, {
             "amount": 1,
-            "category": random.choice(self.categories), 
+            "category": category if not category is None else random.choice(self.categories),
             "difficulty": random.choice(self.difficulties),
             "type": "multiple"
         })
@@ -47,9 +49,34 @@ class Quiz(commands.Cog):
             return None
         return response.json()["results"][0]
 
+    def format_category_name(self, category: str) -> str:
+        if ":" in category:
+            return html.unescape(category.split(":")[1].lstrip())
+        return html.unescape(category)
+
     @discord.app_commands.command(name="quiz", description="Test your general knowledge with a random trivia question")
-    async def execute(self, interaction: discord.Interaction):
-        data: dict[str, str | list[str]] | None = self.get_trivia_question()
+    @app_commands.describe(category="Choose a category. This is optional, you'll get a random category if you don't choose one")
+    @app_commands.choices(category=[
+        app_commands.Choice(name="General Knowledge", value=9),
+        app_commands.Choice(name="Books", value=10),
+        app_commands.Choice(name="Film", value=11),
+        app_commands.Choice(name="Music", value=12),
+        app_commands.Choice(name="Television", value=14),
+        app_commands.Choice(name="Video Games", value=15),
+        app_commands.Choice(name="Board Games", value=16),
+        app_commands.Choice(name="Computers", value=18),
+        app_commands.Choice(name="Mathematics", value=19),
+        app_commands.Choice(name="Mythology", value=20),
+        app_commands.Choice(name="Geography", value=22),
+        app_commands.Choice(name="History", value=23),
+        app_commands.Choice(name="Art", value=25),
+        app_commands.Choice(name="Vehicles", value=28),
+        app_commands.Choice(name="Gadgets", value=30),
+        app_commands.Choice(name="Japanese Anime & Manga", value=31),
+        app_commands.Choice(name="Cartoon & Animations", value=32),
+    ])
+    async def execute(self, interaction: discord.Interaction, category: int | None = None):
+        data: dict[str, str | list[str]] | None = self.get_trivia_question(category)
         if data is None:
             await interaction.response.send_message("Failed to fetch trivia question data. Please try again later!")
             return
@@ -62,7 +89,8 @@ class Quiz(commands.Cog):
                               color=Utils.get_random_color())
         embed.add_field(name="Difficulty",
                         value=data["difficulty"].capitalize())
-        embed.add_field(name="Category", value=data["category"])
+        embed.add_field(name="Category",
+                        value=self.format_category_name(data["category"]))
         embed.add_field(name="Question",
                         value=html.unescape(data["question"]),
                         inline=False)
