@@ -6,8 +6,44 @@ Welcome to DragunBot, a versatile Discord bot designed to enhance server experie
 
 To explore the full list of available commands, simply type `/help`.
 
-## Run the bot
+## Scripts
 
-```powershell
-python "bot/bot.py" <# Or python3 "bot/bot.py" in Linux or macOS #>
+### Run the bot
+
+Use `python3` at the start of the command for Linux or macOS.
+
+```shell
+python "bot/bot.py"
+```
+
+### Update `requirements.txt`
+
+```shell
+pipenv requirements > requirements.txt
+```
+
+## APIs Used
+
+- [ZenQuotes](https://zenquotes.io/)
+- [The Trivia API](https://the-trivia-api.com/)
+- [CodeWars API](https://dev.codewars.com/)
+
+## NoSQL Database Structure
+
+```json
+{
+  "guilds": {
+    "guild_id": {
+      "counting_channel": "channel_id",
+      "confessions_channel": "channel_id",
+      "confessions": {
+        "confession_id": {
+          "author_id": "id",
+          "author": "author",
+          "content": "message content"
+        }
+      }
+    }
+  }
+}
 ```
