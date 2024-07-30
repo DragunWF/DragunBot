@@ -48,3 +48,7 @@ class ConfigManager:
     @staticmethod
     def is_test_mode() -> bool:
         return ConfigManager.__settings["development"]["test_mode"]
+
+    @staticmethod
+    def log_file_enabled() -> bool:
+        return ConfigManager.__settings["development"]["log_file_enabled"]
