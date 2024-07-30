@@ -43,7 +43,7 @@ class Confess(commands.Cog):
     @discord.app_commands.describe(message="The contents of your confession")
     async def confess(self, interaction: discord.Interaction, message: str):
         if self.channel_id is None:
-            await interaction.response.send_message("Confessions channel has not been set up yet. Please use `/setup_confessions` first.")
+            await interaction.response.send_message("Confessions channel has not been set up yet for this guild. Please use `/setup_confessions` first if you're an admin.")
             return
 
         # Fetch the channel using the stored channel ID
