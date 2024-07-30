@@ -39,11 +39,11 @@ class Quiz(commands.Cog):
             32  # Entertainment: Cartoon & Animations
         ]
 
-    def get_trivia_question(self, category: int | None) -> dict | None:
+    def get_trivia_question(self, category: int | None, difficulty: str | None) -> dict | None:
         response = requests.get(self.API_URL, {
             "amount": 1,
             "category": category if not category is None else random.choice(self.categories),
-            "difficulty": random.choice(self.difficulties),
+            "difficulty": difficulty if difficulty else random.choice(self.difficulties),
             "type": "multiple"
         })
         if response.status_code != 200:
@@ -56,7 +56,8 @@ class Quiz(commands.Cog):
         return html.unescape(category)
 
     @discord.app_commands.command(name="quiz", description="Test your general knowledge with a random trivia question")
-    @app_commands.describe(category="Choose a category. This is optional, you'll get a random category if you don't choose one")
+    @app_commands.describe(category="Choose a category. This is optional, you'll get a random category if you don't choose one",
+                           difficulty="Choose a difficulty level. This is optional, you'll get a random difficulty level if you leave this empty")
     @app_commands.choices(category=[
         app_commands.Choice(name="General Knowledge", value=9),
         app_commands.Choice(name="Books", value=10),
@@ -75,9 +76,14 @@ class Quiz(commands.Cog):
         app_commands.Choice(name="Gadgets", value=30),
         app_commands.Choice(name="Japanese Anime & Manga", value=31),
         app_commands.Choice(name="Cartoon & Animations", value=32),
+    ], difficulty=[
+        app_commands.Choice(name="Easy", value="easy"),
+        app_commands.Choice(name="Medium", value="medium"),
+        app_commands.Choice(name="Hard", value="hard"),
     ])
-    async def execute(self, interaction: discord.Interaction, category: int | None = None):
-        data: dict[str, str | list[str]] | None = self.get_trivia_question(category)
+    async def execute(self, interaction: discord.Interaction, category: int = None, difficulty: str = None):
+        data: dict[str, str | list[str]] | None = self.get_trivia_question(
+            category, difficulty)
         if data is None:
             await interaction.response.send_message("Failed to fetch trivia question data. Please try again later!")
             return
@@ -98,15 +104,22 @@ class Quiz(commands.Cog):
         embed.set_footer(text=f"Data fetched from {self.API_URL}")
         await interaction.response.send_message(embed=embed,
                                                 view=TriviaView(CORRECT_ANSWER,
-                                                                options))
+                                                                options, interaction.user.id))
 
 
 class TriviaButton(discord.ui.Button):
-    def __init__(self, label, correct_answer):
+    def __init__(self, label: str, correct_answer: str, user_id: int):
         super().__init__(label=label, style=discord.ButtonStyle.primary)
         self.correct_answer = correct_answer
+        self.user = user_id
 
     async def callback(self, interaction: discord.Interaction):
+        if interaction.user.id != self.user:
+            await interaction.response.send_message(
+                "Only the person who executed the command can answer the question!",
+                ephemeral=True
+            )
+            return
         if self.label == self.correct_answer:
             await interaction.response.send_message(f"**{self.label}** is indeed correct! Congrats, you got the question right")
         else:
@@ -117,11 +130,12 @@ class TriviaButton(discord.ui.Button):
 
 
 class TriviaView(discord.ui.View):
-    def __init__(self, correct_answer: str, options: list[str]):
+    def __init__(self, correct_answer: str, options: list[str], user_id: int):
         super().__init__()
         for answer in options:
             self.add_item(TriviaButton(label=answer,
-                                       correct_answer=correct_answer))
+                                       correct_answer=correct_answer,
+                                       user_id=user_id))
 
     def disable_all_buttons(self):
         for child in self.children:
