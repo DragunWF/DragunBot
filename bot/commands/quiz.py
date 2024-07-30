@@ -16,6 +16,25 @@ class Quiz(commands.Cog):
                              # 4/10 = 40% chance for medium questions
                              *["medium" for i in range(4)],
                              "hard"]  # 1/10 = 10% chance for hard questions
+        self.categories = [
+            9,  # General Knowledge
+            10,  # Entertainment: Books
+            11,  # Entertainment: Film
+            12,  # Entertainment: Music
+            14,  # Entertainment: Television
+            15,  # Entertainment: Video Games
+            16,  # Entertainment: Board Games
+            18,  # Science: Computers
+            19,  # Science: Mathematics
+            20,  # Mythology
+            22,  # Geography
+            23,  # History
+            25,  # Art
+            28,  # Vehicles
+            30,  # Science: Gadgets
+            31,  # Entertainment: Japanese Anime & Manga
+            32  # Entertainment: Cartoon & Animations
+        ]
 
     def get_random_difficulty(self) -> str:
         return self.difficulties[random.randint(0, len(self.difficulties) - 1)]
