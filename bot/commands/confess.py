@@ -63,6 +63,13 @@ class Confess(commands.Cog):
         embed.set_footer(
             text=f"{random.choice(self.footer_emojis)} If you want to send your own confession, simply type /confess"
         )
+
+        DatabaseHelper.add_confession(
+            guild_id=interaction.guild_id,
+            author_id=interaction.user.name,
+            author=interaction.user.id,
+            content=message
+        )
         await channel.send(embed=embed)
         await interaction.response.send_message("Your confession has been sent!", ephemeral=True)
 

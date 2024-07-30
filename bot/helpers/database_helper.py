@@ -65,15 +65,14 @@ class DatabaseHelper:
         return int(channel_id)
 
     @staticmethod
-    def add_confession(message: discord.Message):
-        assert type(message) is discord.Message
-        assert DatabaseHelper.is_guild_exists(message.guild.id)
+    def add_confession(guild_id: int, author_id: int, author: str, content: str):
+        assert DatabaseHelper.is_guild_exists(guild_id)
 
-        ref = f"{DatabaseHelper.__GUILDS}/{message.guild.id}/confessions"
+        ref = f"{DatabaseHelper.__GUILDS}/{guild_id}/confessions"
         confession_count = len(db.reference(ref).get())
         db.reference(ref).child(str(confession_count + 1)).set({
-            "author_id": str(message.author.id),
-            "author": message.author.name,
-            "content": message.content
+            "author_id": str(author_id),
+            "author": author,
+            "content": content
         })
-        logging.info(f"Added confession by {message.author.name} to database")
+        logging.info(f"Added confession by {author} to database")
