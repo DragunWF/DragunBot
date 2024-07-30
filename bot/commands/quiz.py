@@ -36,14 +36,11 @@ class Quiz(commands.Cog):
             32  # Entertainment: Cartoon & Animations
         ]
 
-    def get_random_difficulty(self) -> str:
-        return self.difficulties[random.randint(0, len(self.difficulties) - 1)]
-
     def get_trivia_question(self) -> dict | None:
         response = requests.get(self.API_URL, {
             "amount": 1,
-            "category": 9,  # General Knowledge Category
-            "difficulty": self.get_random_difficulty(),
+            "category": random.choice(self.categories), 
+            "difficulty": random.choice(self.difficulties),
             "type": "multiple"
         })
         if response.status_code != 200:

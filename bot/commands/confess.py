@@ -12,9 +12,6 @@ class Confess(commands.Cog):
         self.channel_id = None
         self.footer_emojis = ("🪐", "☄️", "💫", "❄️", "✨")
 
-    def get_random_emoji(self) -> str:
-        return self.footer_emojis[random.randint(0, len(self.footer_emojis) - 1)]
-
     @discord.app_commands.command(name="setup_confessions",
                                   description="Setup a confessions channel. Enter this command in the channel you want to designate")
     async def setup(self, interaction: discord.Interaction):
@@ -60,7 +57,7 @@ class Confess(commands.Cog):
                               description=f'"{message}"',
                               color=Utils.get_random_color())
         embed.set_footer(
-            text=f"{self.get_random_emoji()} If you want to send your own confession, simply type /confess"
+            text=f"{random.choice(self.footer_emojis)} If you want to send your own confession, simply type /confess"
         )
         await channel.send(embed=embed)
         await interaction.response.send_message("Your confession has been sent!", ephemeral=True)
