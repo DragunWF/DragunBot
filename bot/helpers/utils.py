@@ -37,10 +37,10 @@ class Utils:
 
     @staticmethod
     def get_bot_dir_path() -> str:
-        directories: list[str] = Path(__file__).__str__().split('\\')
-        while directories[-1] != "bot":
-            directories.pop()
-        return "\\".join(directories)
+        path = Path(__file__).resolve()
+        while path.name != "bot":
+            path = path.parent
+        return str(path)
 
     @staticmethod
     def format_num(num: int | float) -> str:
