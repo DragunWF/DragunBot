@@ -22,19 +22,19 @@ class Bot:
         Bot.client.tree.on_error = Debug.on_app_command_error
 
         # For terminal and file logging
-        LOG_FILE_LOCATION = "logs/basic.log"
-        LOG_DIR = os.path.dirname(LOG_FILE_LOCATION)
-        if not os.path.exists(LOG_DIR):
-            os.makedirs(LOG_DIR)
+        handlers = [logging.StreamHandler()]
+        if ConfigManager.log_file_enabled():
+            LOG_FILE_LOCATION = "logs/basic.log"
+            LOG_DIR = os.path.dirname(LOG_FILE_LOCATION)
+            if not os.path.exists(LOG_DIR):
+                os.makedirs(LOG_DIR)
+            handlers.append(logging.FileHandler(LOG_FILE_LOCATION))
 
         logging.basicConfig(
             level=logging.INFO,
             format="%(asctime)s %(levelname)s %(message)s",
             datefmt="%Y-%m-%d %H:%M:%S",
-            handlers=[
-                logging.FileHandler(LOG_FILE_LOCATION),
-                logging.StreamHandler()
-            ]
+            handlers=handlers
         )
 
     @staticmethod
