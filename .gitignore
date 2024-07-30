@@ -9,3 +9,4 @@ venv
 # Miscellaneous Files & Directories
 logs
 dump
+credentials.json
