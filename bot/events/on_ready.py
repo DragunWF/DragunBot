@@ -14,7 +14,7 @@ class OnReady(commands.Cog):
         guilds = self.bot.guilds
         for guild in guilds:
             if not DatabaseHelper.is_guild_exists(guild.id):
-                DatabaseHelper.add_guild(guild.id)
+                DatabaseHelper.add_guild(guild.name, guild.id)
         logging.info("Guilds data is now up to date!")
 
     @commands.Cog.listener()
