@@ -5,6 +5,8 @@ import discord
 import firebase_admin
 from firebase_admin import db, credentials
 
+# Note: I set values to -1 as a default value
+
 
 class DatabaseHelper:
     __database_started = False
@@ -71,8 +73,10 @@ class DatabaseHelper:
             author) is str and type(content) is str
 
         ref = f"{DatabaseHelper.__GUILDS}/{guild_id}/confessions"
-        confession_count = len(db.reference(ref).get())
-        print(db.reference(ref).get())
+        confession_value = db.reference(ref).get()
+        confession_count = len(
+            list(filter(lambda item: not item is None, confession_value))
+        ) if confession_value != -1 else 0
         db.reference(ref).child(str(confession_count + 1)).set({
             "author_id": str(author_id),
             "author": author,
