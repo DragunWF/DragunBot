@@ -1,7 +1,6 @@
 import logging
 import os
 
-import discord
 import firebase_admin
 from firebase_admin import db, credentials
 
@@ -14,7 +13,7 @@ class DatabaseHelper:
 
     @staticmethod
     def start_database():
-        # Makes sure that this method is only called once
+        # Ensures that this method is only called once
         assert DatabaseHelper.__database_started is False
         DatabaseHelper.__database_started = True
         firebase_admin.initialize_app(
