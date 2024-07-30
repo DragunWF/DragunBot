@@ -14,7 +14,7 @@ class Quiz(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.API_URL = "https://opentdb.com/api.php"
-        # To be used with get_random_difficulty() method
+        # To be used with random.choice() method
         self.difficulties = [*["easy" for i in range(5)],  # 5/10 = 50% chance for easy questions
                              # 4/10 = 40% chance for medium questions
                              *["medium" for i in range(4)],
