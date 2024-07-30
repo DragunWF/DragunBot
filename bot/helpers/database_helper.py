@@ -67,16 +67,22 @@ class DatabaseHelper:
         return int(channel_id)
 
     @staticmethod
+    def get_confessions_count(guild_id: int) -> int:
+        assert type(guild_id) is int
+        confession_value = db.reference(
+            f"{DatabaseHelper.__GUILDS}/{guild_id}/confessions").get()
+        return len(
+            list(filter(lambda item: not item is None, confession_value))
+        ) if confession_value != -1 else 0
+
+    @staticmethod
     def add_confession(guild_id: int, author_id: int, author: str, content: str):
         assert DatabaseHelper.is_guild_exists(guild_id)
         assert type(guild_id) is int and type(author_id) is int and type(
             author) is str and type(content) is str
 
         ref = f"{DatabaseHelper.__GUILDS}/{guild_id}/confessions"
-        confession_value = db.reference(ref).get()
-        confession_count = len(
-            list(filter(lambda item: not item is None, confession_value))
-        ) if confession_value != -1 else 0
+        confession_count = DatabaseHelper.get_confessions_count(guild_id)
         db.reference(ref).child(str(confession_count + 1)).set({
             "author_id": str(author_id),
             "author": author,
