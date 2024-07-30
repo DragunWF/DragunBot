@@ -33,31 +33,25 @@ class DatabaseHelper:
 
     @staticmethod
     def add_guild(guild_id: int):
-        db.reference(DatabaseHelper.__GUILDS_KEY).child(
-            {str(guild_id): {
-                "counting_channel": None,
-                "confessions_channel": None,
-                "confessions": {}
-            }}
-        )
+        db.reference(DatabaseHelper.__GUILDS_KEY).child(str(guild_id)).set({
+            "counting_channel": -1,
+            "confessions_channel": -1,
+            "confessions": ""
+        })
         logging.info(f"Added guild <{guild_id}> to database")
 
     @staticmethod
-    def add_confession(guild_id: int, message: discord.Message):
+    def add_confession(message: discord.Message):
         assert type(message) is discord.Message
-        assert DatabaseHelper.is_guild_exists(guild_id)
+        assert DatabaseHelper.is_guild_exists(message.guild.id)
 
-        ref = f"{DatabaseHelper.__GUILDS_KEY}/{guild_id}/confessions"
-        confession_count = db.reference(ref).get()
-        db.reference(ref).child(
-            {
-                str(confession_count + 1): {
-                    "author_id": str(message.author.id),
-                    "author": str(message.author.name),
-                    "content": message.content
-                }
-            }
-        )
+        ref = f"{DatabaseHelper.__GUILDS_KEY}/{message.guild.id}/confessions"
+        confession_count = len(db.reference(ref).get())
+        db.reference(ref).child(str(confession_count + 1)).set({
+            "author_id": str(message.author.id),
+            "author": message.author.name,
+            "content": message.content
+        })
         logging.info(f"Added confession by {message.author.name} to database")
 
     @staticmethod
