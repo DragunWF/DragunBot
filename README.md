@@ -30,6 +30,8 @@ pipenv requirements > requirements.txt
 
 ## NoSQL Database Structure
 
+**Database:** Firebase Realtime Database
+
 ```json
 {
   "guilds": {
