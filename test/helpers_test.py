@@ -24,6 +24,8 @@ def test_utils():
         colors.append(Utils.get_random_color())
     print(colors)
 
+    print(Utils.get_bot_dir_path())
+
 
 def run_tests():
     add_project_root()
