@@ -12,6 +12,8 @@ class Help(commands.Cog):
         output = []
         commands = await self.bot.tree.fetch_commands()
         for command in commands:
+            if command.name == "help":
+                continue
             output.append(f"- `/{command.name}` - {command.description}")
         return "\n".join(output)
 
