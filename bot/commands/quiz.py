@@ -41,7 +41,7 @@ class Quiz(commands.Cog):
     def get_trivia_question(self, category: int | None) -> dict | None:
         response = requests.get(self.API_URL, {
             "amount": 1,
-            "category": category if not category is None else random.choice(self.categories),
+            "category": category if not category else random.choice(self.categories),
             "difficulty": random.choice(self.difficulties),
             "type": "multiple"
         })
