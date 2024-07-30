@@ -36,7 +36,8 @@ class Confess(commands.Cog):
         embed.set_footer(
             text="☄️ If you have any suggestions for this feature; please message the developer, dragunwf."
         )
-        DatabaseHelper.set_confessions_channel(interaction.guild_id, channel_id)
+        DatabaseHelper.set_confessions_channel(
+            interaction.guild_id, channel_id)
         await self.bot.get_channel(channel_id).send(embed=embed)
         await interaction.response.send_message(f"<#{channel_id}> has been set up as the confessions channel!")
 
@@ -66,8 +67,8 @@ class Confess(commands.Cog):
 
         DatabaseHelper.add_confession(
             guild_id=interaction.guild_id,
-            author_id=interaction.user.name,
-            author=interaction.user.id,
+            author_id=interaction.user.id,
+            author=interaction.user.name,
             content=message
         )
         await channel.send(embed=embed)
