@@ -67,9 +67,12 @@ class DatabaseHelper:
     @staticmethod
     def add_confession(guild_id: int, author_id: int, author: str, content: str):
         assert DatabaseHelper.is_guild_exists(guild_id)
+        assert type(guild_id) is int and type(author_id) is int and type(
+            author) is str and type(content) is str
 
         ref = f"{DatabaseHelper.__GUILDS}/{guild_id}/confessions"
         confession_count = len(db.reference(ref).get())
+        print(db.reference(ref).get())
         db.reference(ref).child(str(confession_count + 1)).set({
             "author_id": str(author_id),
             "author": author,
