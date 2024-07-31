@@ -74,7 +74,7 @@ class Quiz(commands.Cog):
         app_commands.Choice(name="Art", value=25),
         app_commands.Choice(name="Vehicles", value=28),
         app_commands.Choice(name="Gadgets", value=30),
-        app_commands.Choice(name="Japanese Anime & Manga", value=31),
+        app_commands.Choice(name="Anime & Manga", value=31),
         app_commands.Choice(name="Cartoon & Animations", value=32),
     ], difficulty=[
         app_commands.Choice(name="Easy", value="easy"),
