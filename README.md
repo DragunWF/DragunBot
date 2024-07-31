@@ -47,6 +47,12 @@ pipenv requirements > requirements.txt
         }
       }
     }
+  },
+  "users": {
+    "user_id": {
+      "username": "name",
+      "trivia_points": 0
+    }
   }
 }
 ```
