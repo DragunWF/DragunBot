@@ -76,9 +76,7 @@ class DatabaseHelper:
 
     @staticmethod
     def add_user_trivia_points(user_id: int, points: int):
-        assert type(user_id) is int and type(points) is int
-        if not DatabaseHelper.is_user_exists(user_id):
-            DatabaseHelper.add_user(user_id)
+        assert type(user_id) is int and type(points) is int and DatabaseHelper.is_user_exists(user_id)
         user_ref = db.reference(Keys.USERS).child(
             str(user_id)).child(Keys.TRIVIA_POINTS.value)
         current_points = user_ref.get()
