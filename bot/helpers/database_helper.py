@@ -1,5 +1,6 @@
 import logging
 import os
+from enum import Enum
 
 import firebase_admin
 from firebase_admin import db, credentials
@@ -7,9 +8,18 @@ from firebase_admin import db, credentials
 # Note: I set values to -1 as a default value
 
 
+class Tables(Enum):
+    GUILDS = "/guilds"
+    USERS = "/users"
+    GUILD_NAME = "guild_name"
+    CONFESSIONS = "confessions"
+    CONFESSIONS_CHANNEL = "confessions_channel"
+    COUNTING_CHANNEL = "counting_channel"
+    TRIVIA_POINTS = "trivia_points"
+
+
 class DatabaseHelper:
     __database_started = False
-    __GUILDS = "/guilds"
 
     @staticmethod
     def start_database():
@@ -34,24 +44,24 @@ class DatabaseHelper:
 
     @staticmethod
     def add_guild(guild_name: str, guild_id: int):
-        db.reference(DatabaseHelper.__GUILDS).child(str(guild_id)).set({
-            "guild_name": guild_name,
-            "counting_channel": -1,
-            "confessions_channel": -1,
-            "confessions": -1
+        db.reference(Tables.GUILDS.value).child(str(guild_id)).set({
+            Tables.GUILD_NAME.value: guild_name,
+            Tables.COUNTING_CHANNEL.value: -1,
+            Tables.CONFESSIONS_CHANNEL.value: -1,
+            Tables.CONFESSIONS.value: -1
         })
         logging.info(f"Added guild <{guild_id}> to database")
 
     @staticmethod
     def is_guild_exists(guild_id: int) -> bool:
-        return str(guild_id) in db.reference(DatabaseHelper.__GUILDS).get()
+        return str(guild_id) in db.reference(Tables.GUILDS.value).get()
 
     @staticmethod
     def set_confessions_channel(guild_id: int, channel_id: int):
         assert type(channel_id) is int
         assert type(guild_id) is int
         db.reference(
-            f"{DatabaseHelper.__GUILDS}/{guild_id}").child("confessions_channel").set(
+            f"{Tables.GUILDS.value}/{guild_id}").child(Tables.CONFESSIONS_CHANNEL.value).set(
             str(channel_id)
         )
 
@@ -59,7 +69,7 @@ class DatabaseHelper:
     def get_confessions_channel(guild_id: int) -> int | None:
         assert type(guild_id) is int
         channel_id = db.reference(
-            f"{DatabaseHelper.__GUILDS}/{guild_id}/confessions_channel"
+            f"{Tables.GUILDS.value}/{guild_id}/{Tables.CONFESSIONS_CHANNEL.value}"
         ).get()
         if channel_id == -1:
             return None
@@ -69,7 +79,7 @@ class DatabaseHelper:
     def get_confessions_count(guild_id: int) -> int:
         assert type(guild_id) is int
         confession_value = db.reference(
-            f"{DatabaseHelper.__GUILDS}/{guild_id}/confessions").get()
+            f"{Tables.GUILDS.value}/{guild_id}/{Tables.CONFESSIONS.value}").get()
         return len(
             list(filter(lambda item: not item is None, confession_value))
         ) if confession_value != -1 else 0
@@ -80,7 +90,7 @@ class DatabaseHelper:
         assert type(guild_id) is int and type(author_id) is int and type(
             author) is str and type(content) is str
 
-        ref = f"{DatabaseHelper.__GUILDS}/{guild_id}/confessions"
+        ref = f"{Tables.GUILDS.value}/{guild_id}/{Tables.CONFESSIONS.value}"
         confession_count = DatabaseHelper.get_confessions_count(guild_id)
         db.reference(ref).child(str(confession_count + 1)).set({
             "author_id": str(author_id),
