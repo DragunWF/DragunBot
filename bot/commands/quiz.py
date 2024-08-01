@@ -138,7 +138,11 @@ class TriviaButton(discord.ui.Button):
         if self.label == self.correct_answer:
             trivia_points_reward = Quiz.get_reward(self.difficulty)
             CONGRATS_TEXT = f"**{self.label}** is indeed correct! Congrats, you got the question right"
-            REWARD_TEXT = f"You were rewarded {trivia_points_reward} trivia points. Type `/leaderboard` to see who has the most amount of points in this guild!"
+            REWARD_TEXT = f"You are rewarded **{trivia_points_reward} trivia points**. Type `/leaderboard` to see who has the most amount of points in this guild!"
+            if not DatabaseHelper.is_user_exists(interaction.user.id):
+                DatabaseHelper.add_user(
+                    interaction.user.id, interaction.user.name
+                )
             DatabaseHelper.add_user_trivia_points(
                 interaction.user.id, trivia_points_reward
             )
