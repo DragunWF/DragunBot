@@ -6,6 +6,8 @@ Welcome to DragunBot, a versatile Discord bot designed to enhance server experie
 
 To explore the full list of available commands, simply type `/help`.
 
+**Note:** This Discord bot is still in development... There are more features to come!
+
 ## Scripts
 
 ### Run the bot
