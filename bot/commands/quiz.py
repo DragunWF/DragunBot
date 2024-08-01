@@ -38,6 +38,16 @@ class Quiz(commands.Cog):
             31,  # Entertainment: Japanese Anime & Manga
             32  # Entertainment: Cartoon & Animations
         ]
+        self.rewards = {  # Via trivia points
+            "easy": {"min": 5, "max": 10},
+            "medium": {"min": 15, "max": 25},
+            "hard": {"min": 40, "max": 60}
+        }
+
+    def get_reward(self, difficulty: str) -> int:
+        assert difficulty in self.rewards
+        reward = self.rewards[difficulty]
+        return random.randint(reward["min"], reward["max"])
 
     def get_trivia_question(self, category: int | None, difficulty: str | None) -> dict | None:
         response = requests.get(self.API_URL, {
