@@ -9,12 +9,16 @@ from firebase_admin import db, credentials
 
 
 class Tables(Enum):
+    # Guilds Keys
     GUILDS = "/guilds"
-    USERS = "/users"
     GUILD_NAME = "guild_name"
-    CONFESSIONS = "confessions"
     CONFESSIONS_CHANNEL = "confessions_channel"
     COUNTING_CHANNEL = "counting_channel"
+    CONFESSIONS = "confessions"
+
+    # Users Keys
+    USERS = "/users"
+    USERNAME = "username"
     TRIVIA_POINTS = "trivia_points"
 
 
@@ -44,6 +48,7 @@ class DatabaseHelper:
 
     @staticmethod
     def add_guild(guild_name: str, guild_id: int):
+        assert type(guild_name) is str and type(guild_id) is int
         db.reference(Tables.GUILDS.value).child(str(guild_id)).set({
             Tables.GUILD_NAME.value: guild_name,
             Tables.COUNTING_CHANNEL.value: -1,
@@ -55,6 +60,35 @@ class DatabaseHelper:
     @staticmethod
     def is_guild_exists(guild_id: int) -> bool:
         return str(guild_id) in db.reference(Tables.GUILDS.value).get()
+
+    @staticmethod
+    def get_users() -> dict:
+        return db.reference(Tables.USERS.value).get()
+
+    @staticmethod
+    def add_user(user_id: int, username: str):
+        assert type(user_id) is int and type(username) is str
+        db.reference(Tables.USERS.value).child(str(user_id)).set({
+            Tables.USERNAME.value: username,
+            Tables.TRIVIA_POINTS.value: 0
+        })
+        logging.info(f"Added user <{user_id}>: {username} to database")
+
+    @staticmethod
+    def add_user_trivia_points(user_id: int, points: int):
+        assert type(user_id) is int and type(points) is int
+        if not DatabaseHelper.is_user_exists(user_id):
+            DatabaseHelper.add_user(user_id)
+        user_ref = db.reference(Tables.USERS).child(
+            str(user_id)).child(Tables.TRIVIA_POINTS.value)
+        current_points = user_ref.get()
+        user_ref.child(Tables.TRIVIA_POINTS.value).set(current_points + points)
+        logging.info(f"Added {points} trivia points to <{user_id}>")
+
+    @staticmethod
+    def is_user_exists(user_id: int):
+        assert type(user_id) is int
+        return str(user_id) in db.reference(Tables.USERS.value).get()
 
     @staticmethod
     def set_confessions_channel(guild_id: int, channel_id: int):
