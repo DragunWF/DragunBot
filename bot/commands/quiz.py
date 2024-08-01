@@ -8,9 +8,16 @@ from discord.ext import commands
 from discord import app_commands
 
 from helpers.utils import Utils
+from helpers.database_helper import DatabaseHelper
 
 
 class Quiz(commands.Cog):
+    rewards = {  # Via trivia points
+        "easy": {"min": 5, "max": 10},
+        "medium": {"min": 15, "max": 25},
+        "hard": {"min": 40, "max": 60}
+    }
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.API_URL = "https://opentdb.com/api.php"
@@ -38,15 +45,11 @@ class Quiz(commands.Cog):
             31,  # Entertainment: Japanese Anime & Manga
             32  # Entertainment: Cartoon & Animations
         ]
-        self.rewards = {  # Via trivia points
-            "easy": {"min": 5, "max": 10},
-            "medium": {"min": 15, "max": 25},
-            "hard": {"min": 40, "max": 60}
-        }
 
-    def get_reward(self, difficulty: str) -> int:
-        assert difficulty in self.rewards
-        reward = self.rewards[difficulty]
+    @staticmethod  # To be accessed in the TriviaButton class
+    def get_reward(difficulty: str) -> int:
+        assert difficulty in Quiz.rewards
+        reward = Quiz.rewards[difficulty]
         return random.randint(reward["min"], reward["max"])
 
     def get_trivia_question(self, category: int | None, difficulty: str | None) -> dict | None:
@@ -114,13 +117,15 @@ class Quiz(commands.Cog):
         embed.set_footer(text=f"Data fetched from {self.API_URL}")
         await interaction.response.send_message(embed=embed,
                                                 view=TriviaView(CORRECT_ANSWER,
-                                                                options, interaction.user.id))
+                                                                options, interaction.user.id,
+                                                                data["difficulty"]))
 
 
 class TriviaButton(discord.ui.Button):
-    def __init__(self, label: str, correct_answer: str, user_id: int):
+    def __init__(self, label: str, correct_answer: str, user_id: int, difficulty: str):
         super().__init__(label=label, style=discord.ButtonStyle.primary)
         self.correct_answer = correct_answer
+        self.difficulty = difficulty
         self.user = user_id
 
     async def callback(self, interaction: discord.Interaction):
@@ -131,7 +136,13 @@ class TriviaButton(discord.ui.Button):
             )
             return
         if self.label == self.correct_answer:
-            await interaction.response.send_message(f"**{self.label}** is indeed correct! Congrats, you got the question right")
+            trivia_points_reward = Quiz.get_reward(self.difficulty)
+            CONGRATS_TEXT = f"**{self.label}** is indeed correct! Congrats, you got the question right"
+            REWARD_TEXT = f"You were rewarded {trivia_points_reward} trivia points. Type `/leaderboard` to see who has the most amount of points in this guild!"
+            DatabaseHelper.add_user_trivia_points(
+                interaction.user.id, trivia_points_reward
+            )
+            await interaction.response.send_message(f"{CONGRATS_TEXT}\n\n{REWARD_TEXT}")
         else:
             await interaction.response.send_message(f"**{self.label}** is wrong! The correct answer was **{self.correct_answer}**")
 
@@ -140,12 +151,13 @@ class TriviaButton(discord.ui.Button):
 
 
 class TriviaView(discord.ui.View):
-    def __init__(self, correct_answer: str, options: list[str], user_id: int):
+    def __init__(self, correct_answer: str, options: list[str], user_id: int, difficulty: str):
         super().__init__()
         for answer in options:
             self.add_item(TriviaButton(label=answer,
                                        correct_answer=correct_answer,
-                                       user_id=user_id))
+                                       user_id=user_id,
+                                       difficulty=difficulty))
 
     def disable_all_buttons(self):
         for child in self.children:
