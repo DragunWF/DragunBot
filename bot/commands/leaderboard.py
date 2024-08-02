@@ -17,7 +17,7 @@ class Leaderboard(commands.Cog):
         for i in range(0, min(len(sorted_users), 10)):
             user: dict = sorted_users[i]
             output.append(
-                f"**#{i + 1}:** `{user[Keys.USERNAME.value]}` - {user[Keys.TRIVIA_POINTS.value]} Trivia Points"
+                f"`#{i + 1}:` **{user[Keys.USERNAME.value]}** - {user[Keys.TRIVIA_POINTS.value]} Trivia Points"
             )
         return "\n".join(output)
 
