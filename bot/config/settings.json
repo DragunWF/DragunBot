@@ -4,8 +4,8 @@
     "username": "dragunwf"
   },
   "development": {
-    "test_mode": false,
-    "log_file_enabled": false
+    "test_mode": true,
+    "log_file_enabled": true
   },
   "bot": {
     "id": 1266325919597989888,
