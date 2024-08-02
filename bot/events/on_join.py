@@ -13,7 +13,6 @@ class GuildJoin(commands.Cog):
     def update_guild_data(self, guild: discord.Guild):
         if not DatabaseHelper.is_guild_exists(guild.id):
             DatabaseHelper.add_guild(guild.name, guild.id)
-            logging.info(f"Added new guild to database: {guild.name} (ID: {guild.id})")
 
     @commands.Cog.listener()
     @Debug.error_handler
