@@ -58,6 +58,12 @@ class DatabaseHelper:
         logging.info(f"Added guild <{guild_id}> to database")
 
     @staticmethod
+    def update_guild_name(guild_id: int, guild_name: str):
+        assert DatabaseHelper.is_guild_exists(guild_id)
+        DatabaseHelper.__update_name(guild_id, guild_name, Keys.GUILDS.value)
+        logging.info(f"Updated guild name in database for <{guild_id}>")
+
+    @staticmethod
     def is_guild_exists(guild_id: int) -> bool:
         return str(guild_id) in db.reference(Keys.GUILDS.value).get()
 
@@ -75,6 +81,12 @@ class DatabaseHelper:
         logging.info(f"Added user <{user_id}>: {username} to database")
 
     @staticmethod
+    def update_user_name(user_id: int, username: str):
+        assert DatabaseHelper.is_user_exists(user_id)
+        DatabaseHelper.__update_name(user_id, username, Keys.USERS.value)
+        logging.info(f"Update username from user: <@{user_id}>")
+
+    @staticmethod
     def add_user_trivia_points(user_id: int, points: int):
         assert type(user_id) is int and type(
             points) is int and DatabaseHelper.is_user_exists(user_id)
@@ -90,22 +102,27 @@ class DatabaseHelper:
 
     @staticmethod
     def set_confessions_channel(guild_id: int, channel_id: int):
-        assert type(channel_id) is int
-        assert type(guild_id) is int
-        db.reference(
-            f"{Keys.GUILDS.value}/{guild_id}").child(Keys.CONFESSIONS_CHANNEL.value).set(
-            str(channel_id)
+        DatabaseHelper.__set_channel(guild_id, channel_id,
+                                     Keys.CONFESSIONS_CHANNEL.value)
+        logging.info(
+            f"Set <#{channel_id}> as confessions channel for guild: <{guild_id}>"
+        )
+
+    @staticmethod
+    def set_counting_channel(guild_id: int, channel_id: int):
+        DatabaseHelper.__set_channel(guild_id, channel_id,
+                                     Keys.COUNTING_CHANNEL.value)
+        logging.info(
+            f"Set <#{channel_id}> as the counting channel for guild: <{guild_id}>"
         )
 
     @staticmethod
     def get_confessions_channel(guild_id: int) -> int | None:
-        assert type(guild_id) is int
-        channel_id = db.reference(
-            f"{Keys.GUILDS.value}/{guild_id}/{Keys.CONFESSIONS_CHANNEL.value}"
-        ).get()
-        if channel_id == -1:
-            return None
-        return int(channel_id)
+        return DatabaseHelper.__get_channel(guild_id, Keys.CONFESSIONS_CHANNEL.value)
+
+    @staticmethod
+    def get_counting_channel(guild_id: int) -> int | None:
+        return DatabaseHelper.__get_channel(guild_id, Keys.COUNTING_CHANNEL.value)
 
     @staticmethod
     def get_confessions_count(guild_id: int) -> int:
@@ -130,3 +147,37 @@ class DatabaseHelper:
             "content": content
         })
         logging.info(f"Added confession by {author} to database")
+
+    @staticmethod
+    def __update_name(id: int, new_name: str, data_key: str):
+        assert type(id) is int and type(
+            new_name) is str and type(data_key) is str
+        name_key = None
+        match data_key:
+            case Keys.USERS.value:
+                name_key = Keys.USERNAME.value
+            case Keys.GUILDS.value:
+                name_key = Keys.GUILD_NAME.value
+            case _:
+                raise Exception(f"Unrecognized data key: {data_key}")
+        db.reference(data_key).child(str(id)).child(name_key).update(
+            {name_key: new_name}
+        )
+
+    @staticmethod
+    def __set_channel(guild_id: int, channel_id: int, channel_type: str):
+        assert type(guild_id) is int and type(channel_id) is int
+        db.reference(
+            f"{Keys.GUILDS.value}/{guild_id}").child(channel_type).set(
+            str(channel_id)
+        )
+
+    @staticmethod
+    def __get_channel(guild_id: int, channel_type: str) -> int | None:
+        assert type(guild_id) is int
+        channel_id = db.reference(
+            f"{Keys.GUILDS.value}/{guild_id}/{channel_type}"
+        ).get()
+        if channel_id == -1:
+            return None
+        return int(channel_id)
