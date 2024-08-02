@@ -47,6 +47,10 @@ pipenv requirements > requirements.txt
           "author": "author",
           "content": "message content"
         }
+      },
+      "counting": {
+        "last_user_id": "user id of the last one who counted",
+        "count": 0
       }
     }
   },
