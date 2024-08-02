@@ -10,6 +10,18 @@ class Setup(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
+    @discord.app_commands.command(name="setup_counting",
+                                  description="Setup a counting channel. Enter this command in the channel you want to designate")
+    async def setup(self, interaction: discord.Interaction):
+        channel_id = interaction.channel_id
+        if not interaction.user.guild_permissions.administrator:
+            await interaction.response.send_message("You must be an admin to use this command!")
+            return
+
+        embed = discord.Embed()
+        await self.bot.get_channel(channel_id).send(embed=embed)
+        await interaction.response.send_message(f"<#{channel_id}> has been set up as the counting channel. Happy counting!")
+
     @discord.app_commands.command(name="setup_confessions",
                                   description="Setup a confessions channel. Enter this command in the channel you want to designate")
     async def setup(self, interaction: discord.Interaction):
