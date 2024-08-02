@@ -10,8 +10,10 @@ class Snipe(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    def create_base_embed(self, message: discord.Message, title: str) -> discord.Embed:
-        embed = discord.Embed(title=title, color=Utils.get_color("royal blue"))
+    def create_base_embed(self, message: discord.Message, title: str, description: str | None = None) -> discord.Embed:
+        embed = discord.Embed(title=title,
+                              description=description,
+                              color=Utils.get_color("royal blue"))
         embed.set_author(name=message.author.name,
                          icon_url=message.author.avatar.url)
         embed.set_footer(text=f"Channel: #{message.channel.name}")
@@ -26,8 +28,8 @@ class Snipe(commands.Cog):
         elif deleted_message.author.id == ConfigManager.owner_id():
             await interaction.response.send_message("Thou shall not snipe the overlord!")
         else:
-            embed = self.create_base_embed(deleted_message, "Deleted Message")
-            embed.add_field(name="Content:", value=deleted_message.content)
+            embed = self.create_base_embed(deleted_message, "Deleted Message",
+                                           deleted_message.content)
             await interaction.response.send_message(embed=embed)
 
     @discord.app_commands.command(name="esnipe", description="Show the most recently edited message")
