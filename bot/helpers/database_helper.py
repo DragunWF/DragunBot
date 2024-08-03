@@ -161,6 +161,11 @@ class DatabaseHelper:
         return DatabaseHelper.__get_channel(guild_id, Keys.COUNTING_CHANNEL.value)
 
     @staticmethod
+    def get_counting_data(guild_id: int) -> dict:
+        assert type(guild_id) is int
+        return db.reference(f"{Keys.GUILDS.value}/{guild_id}/{Keys.COUNTING.value}").get()
+
+    @staticmethod
     def get_confessions_count(guild_id: int) -> int:
         assert type(guild_id) is int
         confession_value = db.reference(
