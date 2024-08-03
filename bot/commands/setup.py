@@ -21,16 +21,14 @@ class Setup(commands.Cog):
                               color=Utils.get_color("royal blue"))
         embed.add_field(name="How to Play the Counting Game",
                         value=(
-                            "Welcome to the Counting Game! Here are the rules:\n\n"
                             "1. **Start at 1**: The first person starts the count with the number 1.\n"
                             "2. **Take Turns**: Each player takes turns to count, increasing the number by 1 each time.\n"
                             "3. **No Double Counts**: The same person cannot count twice in a row. The next number must be posted by a different player.\n"
                             "4. **Avoid Mistakes**: If someone makes a mistake (e.g., posts the wrong number or two people post at the same time), the count resets back to 1.\n"
                             "5. **Record High Scores**: Aim for the highest count! The highest scores will be recorded and celebrated.\n\n"
-                            "Good luck and have fun counting!"
                         ))
         embed.set_footer(
-            text='1️⃣ No need to type any command, just type the number as it is to start counting!'
+            text='1️⃣ No need to type any command, just type the number to start counting!'
         )
         DatabaseHelper.set_counting_channel(
             interaction.guild_id, interaction.channel_id
