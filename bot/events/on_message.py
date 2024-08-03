@@ -1,3 +1,4 @@
+import logging
 import discord
 from discord.ext import commands
 
@@ -5,6 +6,7 @@ from helpers.config_manager import ConfigManager
 from helpers.utils import Utils
 from helpers.session_data import SessionData
 from helpers.debug import Debug
+from helpers.database_helper import DatabaseHelper, Keys
 
 
 class OnMessage(commands.Cog):
@@ -31,6 +33,9 @@ class OnMessage(commands.Cog):
             return
         self.log_message_location(message)
         self.message_log(f'[{message.author}]: {message.content}')
+        if CountingGame.is_counting_channel(message.guild.id, message.channel.id):
+            if message.content.isdigit():
+                CountingGame.count(message)
         await self.bot.process_commands(message)
 
     @commands.Cog.listener()
@@ -38,7 +43,9 @@ class OnMessage(commands.Cog):
     async def on_message_delete(self, message: discord.Message) -> None:
         SessionData.record_deleted_message(message)
         self.log_message_location(message)
-        self.message_log(f"[{message.author}] (Deleted Message): {message.content}")
+        self.message_log(
+            f"[{message.author}] (Deleted Message): {message.content}"
+        )
 
         embed = discord.Embed(title="Deleted Message",
                               color=Utils.get_random_color())
@@ -56,7 +63,9 @@ class OnMessage(commands.Cog):
         if before.content != after.content:
             SessionData.record_edited_message(before, after)
             self.log_message_location(before)
-            self.message_log(f"[{after.author.name}] (Edited Message): {after.content}")
+            self.message_log(
+                f"[{after.author.name}] (Edited Message): {after.content}"
+            )
 
             embed = discord.Embed(title="Edited Message",
                                   color=Utils.get_random_color())
@@ -67,6 +76,40 @@ class OnMessage(commands.Cog):
             embed.set_footer(text=f"Guild: {before.guild.name}")
 
             await self.bot.get_channel(ConfigManager.edited_messages_channel()).send(embed=embed)
+
+
+class CountingGame:
+    @staticmethod
+    def is_counting_channel(guild_id: int, channel_id: int) -> bool:
+        return DatabaseHelper.get_counting_channel(guild_id) == channel_id
+
+    @staticmethod
+    def reset_counting(guild_id: int):
+        DatabaseHelper.update_counting(guild_id, -1, 0)
+
+    @staticmethod
+    def count(message: discord.Message) -> bool:
+        try:
+            counting_data = DatabaseHelper.get_counting_data()
+            NEXT_NUM = counting_data[Keys.COUNT.value] + 1
+            CURRENT_NUM = int(message.content)
+            USER_PING = f"<@{message.author.id}>"
+            if counting_data[Keys.LAST_USER_ID] == message.author.id:
+                CountingGame.reset_counting()
+                message.channel.send(
+                    f"{USER_PING} got it wrong. The same user cannot count two consecutive times!"
+                )
+            elif CURRENT_NUM == NEXT_NUM:
+                DatabaseHelper.update_counting(message.guild.id, message.author.id,
+                                               NEXT_NUM)
+                message.add_reaction("✅" if CURRENT_NUM % 2 != 0 else "☑️")
+            else:
+                CountingGame.reset_counting()
+                message.channel.send(
+                    f"{USER_PING} messed up. The next number was {NEXT_NUM}, not {CURRENT_NUM}!"
+                )
+        except ValueError as err:
+            logging.error(err)
 
 
 async def setup(bot: commands.Bot) -> None:
