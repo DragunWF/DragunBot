@@ -84,7 +84,7 @@ class CountingGame:
         return DatabaseHelper.get_counting_channel(guild_id) == channel_id
 
     @staticmethod
-    async def is_new_high_score(guild_id: int):
+    async def is_new_high_score(guild_id: int) -> bool:
         return
 
     @staticmethod
