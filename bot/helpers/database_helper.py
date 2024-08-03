@@ -111,7 +111,7 @@ class DatabaseHelper:
         DatabaseHelper.__set_channel(guild_id, channel_id,
                                      Keys.COUNTING_CHANNEL.value)
         db.reference(Keys.GUILDS.value).child(str(guild_id)).child(Keys.COUNTING.value).set(
-            {Keys.COUNTING.value: {Keys.LAST_USER_ID.id: -1,
+            {Keys.COUNTING.value: {Keys.LAST_USER_ID.value: -1,
                                    Keys.COUNT.value: 0, Keys.HIGH_SCORE.value: 0}}
         )
         logging.info(
@@ -123,7 +123,8 @@ class DatabaseHelper:
         assert type(guild_id) is int and type(
             user_id) is int and type(count) is int
         db.reference(Keys.GUILDS.value).child(str(guild_id)).child(Keys.COUNTING.value).update(
-            {Keys.COUNTING.value: {Keys.LAST_USER_ID.id: user_id, Keys.COUNT.value: count}}
+            {Keys.COUNTING.value: {Keys.LAST_USER_ID.value:
+                                   user_id, Keys.COUNT.value: count}}
         )
         logging.info(f"Updated count to {count} for guild <{guild_id}>")
 

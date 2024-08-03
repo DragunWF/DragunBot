@@ -12,7 +12,7 @@ class Setup(commands.Cog):
 
     @discord.app_commands.command(name="setup_counting",
                                   description="Setup a counting channel. Enter this command in the channel you want to designate")
-    async def setup(self, interaction: discord.Interaction):
+    async def setup_counting(self, interaction: discord.Interaction):
         if not interaction.user.guild_permissions.administrator:
             await interaction.response.send_message("You must be an admin to use this command!")
             return
@@ -32,11 +32,11 @@ class Setup(commands.Cog):
         DatabaseHelper.set_counting_channel(
             interaction.guild_id, interaction.channel_id
         )
-        await self.bot.get_channel(interaction.channel_id).send(embed=embed)
+        await interaction.response.send_message(embed=embed)
 
     @discord.app_commands.command(name="setup_confessions",
                                   description="Setup a confessions channel. Enter this command in the channel you want to designate")
-    async def setup(self, interaction: discord.Interaction):
+    async def setup_confessions(self, interaction: discord.Interaction):
         if not interaction.user.guild_permissions.administrator:
             await interaction.response.send_message("You must be an admin to use this command!")
             return
