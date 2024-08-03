@@ -18,14 +18,14 @@ class Setup(commands.Cog):
             return
 
         embed = discord.Embed(title="Counting channel has been designated to this channel!",
-                              description=(
-                                  "## Counting Game Information\n",
-                                  "- Users start counting at 1.\n",
-                                  "- The same person cannot count twice, the next counter must be a different person.\n",
-                                  "- If one person messes up the counting, the count starts all the way back to 1.\n",
-                                  "- High scores get recorded!"
-                              ),
                               color=Utils.get_color("royal blue"))
+        embed.add_field(name="Counting Game Information",
+                        value=(
+                            "- Users start counting at 1.\n",
+                            "- The same person cannot count twice, the next counter must be a different person.\n",
+                            "- If one person messes up the counting, the count starts all the way back to 1.\n",
+                            "- High scores get recorded!"
+                        ))
         embed.set_footer(
             text='1️⃣ No need to type any command, just type the number as it is to start counting! Start with entering "1"'
         )
