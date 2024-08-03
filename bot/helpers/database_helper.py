@@ -117,7 +117,7 @@ class DatabaseHelper:
         if not channel_exists:
             guild_ref.child(Keys.COUNTING.value).set(
                 {Keys.LAST_USER_ID.value: -1,
-                    Keys.COUNT.value: 0, Keys.HIGH_SCORE.value: 0}
+                 Keys.COUNT.value: 0, Keys.HIGH_SCORE.value: 0}
             )
             operation_text = "Moved to"
         logging.info(
@@ -129,8 +129,7 @@ class DatabaseHelper:
         assert type(guild_id) is int and type(
             user_id) is int and type(count) is int
         db.reference(Keys.GUILDS.value).child(str(guild_id)).child(Keys.COUNTING.value).update(
-            {Keys.COUNTING.value: {Keys.LAST_USER_ID.value:
-                                   user_id, Keys.COUNT.value: count}}
+            {Keys.LAST_USER_ID.value: user_id, Keys.COUNT.value: count}
         )
         logging.info(f"Updated count to {count} for guild <{guild_id}>")
 
