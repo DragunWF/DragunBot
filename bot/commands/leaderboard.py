@@ -8,18 +8,22 @@ from helpers.database_helper import DatabaseHelper, Keys
 class Leaderboard(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self.top_user_count = 0
+        self.leaderboard_text = None
 
-    def create_leaderboard(self, guild: discord.Guild) -> str:
-        return self.generate_leaderboard(self.sort_users(self.get_users(guild)))
+    def create_leaderboard(self, guild: discord.Guild):
+        self.generate_leaderboard(self.sort_users(self.get_users(guild)))
 
-    def generate_leaderboard(self, sorted_users: list[dict]) -> str:
+    def generate_leaderboard(self, sorted_users: list[dict]):
         output = []
-        for i in range(0, min(len(sorted_users), 10)):
+        # Limit leaderboard output to users <= 10
+        self.top_user_count = min(len(sorted_users), 10)
+        for i in range(0, self.top_user_count):
             user: dict = sorted_users[i]
             output.append(
                 f"`#{i + 1}:` **{user[Keys.USERNAME.value]}** - {user[Keys.TRIVIA_POINTS.value]} Trivia Points"
             )
-        return "\n".join(output)
+        self.leaderboard_text = "\n".join(output)
 
     def sort_users(self, users: list[dict]) -> list[dict]:
         return sorted(users, key=lambda user: user[Keys.TRIVIA_POINTS.value], reverse=True)
@@ -39,8 +43,9 @@ class Leaderboard(commands.Cog):
     async def leaderboard_quiz(self, interaction: discord.Interaction):
         embed = discord.Embed(title="Trivia Quiz Points Leaderboard",
                               color=Utils.get_color("royal blue"))
-        embed.add_field(name=f"Top 10 Users in {interaction.guild.name}",
-                        value=self.create_leaderboard(interaction.guild))
+        self.create_leaderboard(interaction.guild)
+        embed.add_field(name=f"Top {self.top_user_count} Users in {interaction.guild.name}",
+                        value=self.leaderboard_text)
         embed.set_footer(
             text="Type /quiz to play the trivia quiz game and earn points!"
         )
