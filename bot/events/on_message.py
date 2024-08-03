@@ -84,6 +84,10 @@ class CountingGame:
         return DatabaseHelper.get_counting_channel(guild_id) == channel_id
 
     @staticmethod
+    async def is_new_high_score(guild_id: int):
+        return
+
+    @staticmethod
     async def reset_counting(message: discord.Message):
         DatabaseHelper.update_counting(message.guild.id, -1, 0)
         await message.add_reaction("❌")
