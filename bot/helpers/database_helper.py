@@ -137,6 +137,13 @@ class DatabaseHelper:
         )
 
     @staticmethod
+    def get_counting_high_score(guild_id: int) -> int:
+        assert type(guild_id) is int
+        return db.reference(
+            f"{Keys.GUILDS.value}/{guild_id}/{Keys.COUNTING.value}/{Keys.HIGH_SCORE}"
+        ).get()
+
+    @staticmethod
     def set_counting_high_score(guild_id: int, high_score: int):
         assert type(guild_id) is int and type(high_score) is int
         db.reference(Keys.GUILDS.value).child(str(guild_id)).child(Keys.COUNTING.value).child(Keys.HIGH_SCORE.value).update(
