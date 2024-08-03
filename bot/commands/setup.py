@@ -13,19 +13,30 @@ class Setup(commands.Cog):
     @discord.app_commands.command(name="setup_counting",
                                   description="Setup a counting channel. Enter this command in the channel you want to designate")
     async def setup(self, interaction: discord.Interaction):
-        channel_id = interaction.channel_id
         if not interaction.user.guild_permissions.administrator:
             await interaction.response.send_message("You must be an admin to use this command!")
             return
 
-        embed = discord.Embed()
-        await self.bot.get_channel(channel_id).send(embed=embed)
-        await interaction.response.send_message(f"<#{channel_id}> has been set up as the counting channel. Happy counting!")
+        embed = discord.Embed(title="Counting channel has been designated to this channel!",
+                              description=(
+                                  "## Counting Game Information\n",
+                                  "- Users start counting at 1.\n",
+                                  "- The same person cannot count twice, the next counter must be a different person.\n",
+                                  "- If one person messes up the counting, the count starts all the way back to 1.\n",
+                                  "- High scores get recorded!"
+                              ),
+                              color=Utils.get_color("royal blue"))
+        embed.set_footer(
+            text='1️⃣ No need to type any command, just type the number as it is to start counting! Start with entering "1"'
+        )
+        DatabaseHelper.set_counting_channel(
+            interaction.guild_id, interaction.channel_id
+        )
+        await self.bot.get_channel(interaction.channel_id).send(embed=embed)
 
     @discord.app_commands.command(name="setup_confessions",
                                   description="Setup a confessions channel. Enter this command in the channel you want to designate")
     async def setup(self, interaction: discord.Interaction):
-        channel_id = interaction.channel_id
         if not interaction.user.guild_permissions.administrator:
             await interaction.response.send_message("You must be an admin to use this command!")
             return
@@ -47,9 +58,10 @@ class Setup(commands.Cog):
             text="☄️ If you have any suggestions for this feature; please message the developer, dragunwf."
         )
         DatabaseHelper.set_confessions_channel(
-            interaction.guild_id, channel_id)
-        await self.bot.get_channel(channel_id).send(embed=embed)
-        await interaction.response.send_message(f"<#{channel_id}> has been set up as the confessions channel!")
+            interaction.guild_id, interaction.channel_id
+        )
+        await self.bot.get_channel(interaction.channel_id).send(embed=embed)
+        await interaction.response.send_message(f"<#{interaction.channel_id}> has been set up as the confessions channel!")
 
 
 async def setup(bot: commands.Bot):

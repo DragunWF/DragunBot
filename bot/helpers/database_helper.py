@@ -15,6 +15,12 @@ class Keys(Enum):
     CONFESSIONS_CHANNEL = "confessions_channel"
     COUNTING_CHANNEL = "counting_channel"
     CONFESSIONS = "confessions"
+    COUNTING = "counting"
+
+    # Counting keys
+    LAST_USER_ID = "last_user_id"
+    COUNT = "count"
+    HIGH_SCORE = "high_score"
 
     # Users Keys
     USERS = "/users"
@@ -101,19 +107,42 @@ class DatabaseHelper:
         return str(user_id) in db.reference(Keys.USERS.value).get()
 
     @staticmethod
+    def set_counting_channel(guild_id: int, channel_id: int):
+        DatabaseHelper.__set_channel(guild_id, channel_id,
+                                     Keys.COUNTING_CHANNEL.value)
+        db.reference(Keys.GUILDS.value).child(str(guild_id)).child(Keys.COUNTING.value).set(
+            {Keys.COUNTING.value: {Keys.LAST_USER_ID.id: -1,
+                                   Keys.COUNT.value: 0, Keys.HIGH_SCORE.value: 0}}
+        )
+        logging.info(
+            f"Set <#{channel_id}> as the counting channel for guild: <{guild_id}>"
+        )
+
+    @staticmethod
+    def update_counting(guild_id: int, user_id: int, count: int):
+        assert type(guild_id) is int and type(
+            user_id) is int and type(count) is int
+        db.reference(Keys.GUILDS.value).child(str(guild_id)).child(Keys.COUNTING.value).update(
+            {Keys.COUNTING.value: {Keys.LAST_USER_ID.id: user_id, Keys.COUNT.value: count}}
+        )
+        logging.info(f"Updated count to {count} for guild <{guild_id}>")
+
+    @staticmethod
+    def set_counting_high_score(guild_id: int, high_score: int):
+        assert type(guild_id) is int and type(high_score) is int
+        db.reference(Keys.GUILDS.value).child(str(guild_id)).child(Keys.COUNTING.value).child(Keys.HIGH_SCORE.value).update(
+            {Keys.HIGH_SCORE.value: high_score}
+        )
+        logging.info(
+            f"Updated counting high score for guild: <{guild_id}> to {high_score}"
+        )
+
+    @staticmethod
     def set_confessions_channel(guild_id: int, channel_id: int):
         DatabaseHelper.__set_channel(guild_id, channel_id,
                                      Keys.CONFESSIONS_CHANNEL.value)
         logging.info(
             f"Set <#{channel_id}> as confessions channel for guild: <{guild_id}>"
-        )
-
-    @staticmethod
-    def set_counting_channel(guild_id: int, channel_id: int):
-        DatabaseHelper.__set_channel(guild_id, channel_id,
-                                     Keys.COUNTING_CHANNEL.value)
-        logging.info(
-            f"Set <#{channel_id}> as the counting channel for guild: <{guild_id}>"
         )
 
     @staticmethod
