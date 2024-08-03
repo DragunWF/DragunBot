@@ -20,8 +20,9 @@ class Leaderboard(commands.Cog):
         self.top_user_count = min(len(sorted_users), 10)
         for i in range(0, self.top_user_count):
             user: dict = sorted_users[i]
+            formatted_points = Utils.format_num(user[Keys.TRIVIA_POINTS.value])
             output.append(
-                f"`#{i + 1}:` **{user[Keys.USERNAME.value]}** - {user[Keys.TRIVIA_POINTS.value]} Trivia Points"
+                f"`#{i + 1}:` **{user[Keys.USERNAME.value]}** - {formatted_points} Trivia Points"
             )
         self.leaderboard_text = "\n".join(output)
 
