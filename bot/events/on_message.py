@@ -35,7 +35,7 @@ class OnMessage(commands.Cog):
         self.message_log(f'[{message.author}]: {message.content}')
         if CountingGame.is_counting_channel(message.guild.id, message.channel.id):
             if message.content.isdigit():
-                CountingGame.count(message)
+                await CountingGame.count(message)
         await self.bot.process_commands(message)
 
     @commands.Cog.listener()
@@ -84,29 +84,30 @@ class CountingGame:
         return DatabaseHelper.get_counting_channel(guild_id) == channel_id
 
     @staticmethod
-    def reset_counting(guild_id: int):
-        DatabaseHelper.update_counting(guild_id, -1, 0)
+    async def reset_counting(message: discord.Message):
+        DatabaseHelper.update_counting(message.guild.id, -1, 0)
+        await message.add_reaction("❌")
 
     @staticmethod
-    def count(message: discord.Message) -> bool:
+    async def count(message: discord.Message) -> bool:
         try:
-            counting_data = DatabaseHelper.get_counting_data()
+            counting_data = DatabaseHelper.get_counting_data(message.guild.id)
             NEXT_NUM = counting_data[Keys.COUNT.value] + 1
             CURRENT_NUM = int(message.content)
             USER_PING = f"<@{message.author.id}>"
-            if counting_data[Keys.LAST_USER_ID] == message.author.id:
-                CountingGame.reset_counting()
-                message.channel.send(
-                    f"{USER_PING} got it wrong. The same user cannot count two consecutive times!"
+            if counting_data[Keys.LAST_USER_ID.value] == message.author.id:
+                await CountingGame.reset_counting(message)
+                await message.channel.send(
+                    f"{USER_PING} got it wrong. The same user cannot count two consecutive times! We're back to counting at **1**"
                 )
             elif CURRENT_NUM == NEXT_NUM:
                 DatabaseHelper.update_counting(message.guild.id, message.author.id,
                                                NEXT_NUM)
-                message.add_reaction("✅" if CURRENT_NUM % 2 != 0 else "☑️")
+                await message.add_reaction("✅" if CURRENT_NUM % 2 != 0 else "☑️")
             else:
-                CountingGame.reset_counting()
-                message.channel.send(
-                    f"{USER_PING} messed up. The next number was {NEXT_NUM}, not {CURRENT_NUM}!"
+                await CountingGame.reset_counting(message)
+                await message.channel.send(
+                    f"{USER_PING} messed up. The next number was **{NEXT_NUM}**, not **{CURRENT_NUM}**! We're starting the count over at **1**"
                 )
         except ValueError as err:
             logging.error(err)
