@@ -5,7 +5,7 @@ from enum import Enum
 import firebase_admin
 from firebase_admin import db, credentials
 
-# Note: I set values to -1 as a default value
+# Note: I set values to -1 as a default value for numeric values
 
 
 class Keys(Enum):
@@ -108,14 +108,20 @@ class DatabaseHelper:
 
     @staticmethod
     def set_counting_channel(guild_id: int, channel_id: int):
+        guild_ref = db.reference(Keys.GUILDS.value).child(str(guild_id))
+        channel_exists = guild_ref.child(
+            Keys.COUNTING_CHANNEL.value).get() != -1
+        operation_text = "Set"
         DatabaseHelper.__set_channel(guild_id, channel_id,
                                      Keys.COUNTING_CHANNEL.value)
-        db.reference(Keys.GUILDS.value).child(str(guild_id)).child(Keys.COUNTING.value).set(
-            {Keys.COUNTING.value: {Keys.LAST_USER_ID.value: -1,
-                                   Keys.COUNT.value: 0, Keys.HIGH_SCORE.value: 0}}
-        )
+        if not channel_exists:
+            guild_ref.child(Keys.COUNTING.value).set(
+                {Keys.LAST_USER_ID.value: -1,
+                    Keys.COUNT.value: 0, Keys.HIGH_SCORE.value: 0}
+            )
+            operation_text = "Moved to"
         logging.info(
-            f"Set <#{channel_id}> as the counting channel for guild: <{guild_id}>"
+            f"{operation_text} <#{channel_id}> as the counting channel for guild: <{guild_id}>"
         )
 
     @staticmethod
