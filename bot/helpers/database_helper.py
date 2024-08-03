@@ -131,7 +131,10 @@ class DatabaseHelper:
         db.reference(Keys.GUILDS.value).child(str(guild_id)).child(Keys.COUNTING.value).update(
             {Keys.LAST_USER_ID.value: user_id, Keys.COUNT.value: count}
         )
-        logging.info(f"Updated count to {count} for guild <{guild_id}>")
+        logging.info(
+            f"Updated count to {count} for guild <{guild_id}>"
+            if count != 1 else f"Resetting count for guild <{guild_id}>"
+        )
 
     @staticmethod
     def set_counting_high_score(guild_id: int, high_score: int):
