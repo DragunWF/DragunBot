@@ -3,7 +3,6 @@ import discord
 from discord.ext import commands
 
 from helpers.utils import Utils
-from helpers.config_manager import ConfigManager
 from helpers.database_helper import DatabaseHelper
 
 
