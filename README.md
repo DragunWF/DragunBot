@@ -18,6 +18,12 @@ Use `python3` at the start of the command for Linux or macOS.
 python "bot/bot.py"
 ```
 
+### Install `requirements.txt`
+
+```shell
+pipenv install -r requirements.txt
+```
+
 ### Update `requirements.txt`
 
 ```shell
