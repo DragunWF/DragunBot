@@ -10,7 +10,7 @@ from helpers.database_helper import DatabaseHelper, Keys
 
 
 class OnMessage(commands.Cog):
-    def __init__(self, bot: commands.Bot) -> None:
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.last_guild: str = None
         self.last_channel: str = None
@@ -28,7 +28,7 @@ class OnMessage(commands.Cog):
 
     @commands.Cog.listener()
     @Debug.error_handler
-    async def on_message(self, message: discord.Message) -> None:
+    async def on_message(self, message: discord.Message):
         if message.author.bot:
             return
         self.log_message_location(message)
@@ -40,7 +40,7 @@ class OnMessage(commands.Cog):
 
     @commands.Cog.listener()
     @Debug.error_handler
-    async def on_message_delete(self, message: discord.Message) -> None:
+    async def on_message_delete(self, message: discord.Message):
         if message.author.bot:
             return
         SessionData.record_deleted_message(message)
@@ -61,7 +61,7 @@ class OnMessage(commands.Cog):
 
     @commands.Cog.listener()
     @Debug.error_handler
-    async def on_message_edit(self, before: discord.Message, after: discord.Message) -> None:
+    async def on_message_edit(self, before: discord.Message, after: discord.Message):
         if before.content != after.content and not before.author.bot:
             SessionData.record_edited_message(before, after)
             self.log_message_location(before)
