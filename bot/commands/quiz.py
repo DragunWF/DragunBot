@@ -12,7 +12,7 @@ from helpers.database_helper import DatabaseHelper
 
 
 class Quiz(commands.Cog):
-    rewards = {  # Via trivia points
+    __rewards = {  # Via trivia points
         "easy": {"min": 5, "max": 10},
         "medium": {"min": 15, "max": 25},
         "hard": {"min": 40, "max": 60}
@@ -48,8 +48,8 @@ class Quiz(commands.Cog):
 
     @staticmethod  # To be accessed in the TriviaButton class
     def get_reward(difficulty: str) -> int:
-        assert difficulty in Quiz.rewards
-        reward = Quiz.rewards[difficulty]
+        assert difficulty in Quiz.__rewards
+        reward = Quiz.__rewards[difficulty]
         return random.randint(reward["min"], reward["max"])
 
     def get_trivia_question(self, category: int | None, difficulty: str | None) -> dict | None:
