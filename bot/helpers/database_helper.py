@@ -26,6 +26,7 @@ class Keys(Enum):
     USERS = "/users"
     USERNAME = "username"
     TRIVIA_POINTS = "trivia_points"
+    TIMES_COUNTED = "times_counted"
 
 
 class DatabaseHelper:
@@ -78,6 +79,14 @@ class DatabaseHelper:
         return db.reference(Keys.USERS.value).get()
 
     @staticmethod
+    def get_user(user_id: int) -> dict | None:
+        assert type(user_id) is int
+        users = DatabaseHelper.get_users()
+        if not str(user_id) in users:
+            return None
+        return users[str(user_id)]
+
+    @staticmethod
     def add_user(user_id: int, username: str):
         assert type(user_id) is int and type(username) is str
         db.reference(Keys.USERS.value).child(str(user_id)).set({
@@ -91,6 +100,19 @@ class DatabaseHelper:
         assert DatabaseHelper.is_user_exists(user_id)
         DatabaseHelper.__update_name(user_id, username, Keys.USERS.value)
         logging.info(f"Update username from user: <@{user_id}>")
+
+    @staticmethod
+    def update_user_times_counted(user_id: int):
+        assert type(user_id) is int
+        user = DatabaseHelper.get_user(user_id)
+        if user is None:
+            raise Exception("User not found")
+        db.reference(f"{Keys.USERS.value}/{user_id}/{Keys.TIMES_COUNTED.value}").set(
+            user[Keys.TIMES_COUNTED.value] + 1
+        )
+        logging.info(
+            f'Incremented {Keys.TIMES_COUNTED.value} attribute for user <@{user_id}>'
+        )
 
     @staticmethod
     def add_user_trivia_points(user_id: int, points: int):
