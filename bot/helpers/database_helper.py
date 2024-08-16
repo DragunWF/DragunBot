@@ -238,9 +238,7 @@ class DatabaseHelper:
                 name_key = Keys.GUILD_NAME.value
             case _:
                 raise Exception(f"Unrecognized data key: {data_key}")
-        db.reference(data_key).child(str(id)).child(name_key).update(
-            {name_key: new_name}
-        )
+        db.reference(f"{data_key}/{id}/").update({name_key: new_name})
 
     @staticmethod
     def __set_channel(guild_id: int, channel_id: int, channel_type: str):

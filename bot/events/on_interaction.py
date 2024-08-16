@@ -12,7 +12,7 @@ class CommandLogger(commands.Cog):
     def update_user_data(self, interaction: discord.Interaction):
         if DatabaseHelper.is_user_exists(interaction.user.id):
             user_data = DatabaseHelper.get_user(interaction.user.id)
-            if user_data[Keys.USERNAME.name] != interaction.user.name:
+            if user_data[Keys.USERNAME.value] != interaction.user.name:
                 DatabaseHelper.update_user_name(
                     interaction.user.id, interaction.user.name
                 )
