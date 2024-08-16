@@ -54,6 +54,12 @@ class DatabaseHelper:
         logging.info("Successfully connected to Realtime Firebase Database")
 
     @staticmethod
+    def get_guild(guild_id: int) -> dict:
+        assert DatabaseHelper.is_guild_exists(
+            guild_id) and type(guild_id) is int
+        return db.reference(f"{Keys.GUILDS.value}/{guild_id}").get()
+
+    @staticmethod
     def add_guild(guild_name: str, guild_id: int):
         assert type(guild_name) is str and type(guild_id) is int
         db.reference(Keys.GUILDS.value).child(str(guild_id)).set({
