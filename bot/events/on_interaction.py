@@ -24,7 +24,7 @@ class CommandLogger(commands.Cog):
                 interaction.guild_id, interaction.guild.name
             )
 
-    @ commands.Cog.listener()
+    @commands.Cog.listener()
     async def on_interaction(self, interaction: discord.Interaction):
         self.update_user_data(interaction)
         self.update_guild_data(interaction)
