@@ -45,6 +45,7 @@ class CountingGame:
             elif CURRENT_NUM == NEXT_NUM:
                 DatabaseHelper.update_counting(message.guild.id, message.author.id,
                                                NEXT_NUM)
+                DatabaseHelper.update_user_times_counted(message.author.id)
                 await message.add_reaction("✅" if CURRENT_NUM % 2 != 0 else "☑️")
             else:
                 await message.channel.send(

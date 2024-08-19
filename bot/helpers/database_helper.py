@@ -128,6 +128,15 @@ class DatabaseHelper:
         current_points = user_ref.child(Keys.TRIVIA_POINTS.value).get()
         user_ref.update({Keys.TRIVIA_POINTS.value: current_points + points})
         logging.info(f"Added {points} trivia points to <{user_id}>")
+    
+    @staticmethod
+    def add_user_times_counted(user_id: int):
+        assert type(user_id) is int
+        user_ref = db.reference(f"{Keys.USERS.value}/{user_id}")
+        current_counts = user_ref.child(Keys.TIMES_COUNTED.value).get()
+        UPDATED_COUNT = current_counts + 1
+        user_ref.update({Keys.TIMES_COUNTED.value: UPDATED_COUNT})
+        logging.info(f'Updated "{Keys.TIMES_COUNTED.value}" to {UPDATED_COUNT} for user: <@{user_id}>')
 
     @staticmethod
     def is_user_exists(user_id: int):
