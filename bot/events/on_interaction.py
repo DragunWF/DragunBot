@@ -13,6 +13,9 @@ class CommandLogger(commands.Cog):
         if DatabaseHelper.is_user_exists(interaction.user.id):
             user_data = DatabaseHelper.get_user(interaction.user.id)
             if user_data[Keys.USERNAME.value] != interaction.user.name:
+                logging.info(
+                    f"Update username: {user_data[Keys.USERNAME.value]} to {interaction.user.name}"
+                )
                 DatabaseHelper.update_user_name(
                     interaction.user.id, interaction.user.name
                 )
@@ -20,6 +23,9 @@ class CommandLogger(commands.Cog):
     def update_guild_data(self, interaction: discord.Interaction):
         guild_data = DatabaseHelper.get_guild(interaction.guild_id)
         if interaction.guild.name != guild_data[Keys.GUILD_NAME.value]:
+            logging.info(
+                f"Update guild name: {guild_data[Keys.GUILD_NAME.value]} to {interaction.guild.name}"
+            )
             DatabaseHelper.update_guild_name(
                 interaction.guild_id, interaction.guild.name
             )
