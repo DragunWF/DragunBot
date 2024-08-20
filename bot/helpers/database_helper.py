@@ -25,6 +25,7 @@ class Keys(Enum):
     # Users Keys
     USERS = "/users"
     USERNAME = "username"
+    COMMANDS_EXECUTED = "commands_executed"
     TRIVIA_POINTS = "trivia_points"
     TIMES_COUNTED = "times_counted"
 
@@ -139,9 +140,18 @@ class DatabaseHelper:
         logging.info(f'Updated "{Keys.TIMES_COUNTED.value}" to {UPDATED_COUNT} for user: <@{user_id}>')
 
     @staticmethod
-    def is_user_exists(user_id: int):
+    def is_user_exists(user_id: int) -> bool:
         assert type(user_id) is int
         return str(user_id) in db.reference(Keys.USERS.value).get()
+    
+    @staticmethod
+    def is_username_exists(username: str) -> bool:
+        assert type(user_id) is int
+        users = db.reference(Keys.USERS.value).get()
+        for user_id in users:
+            if users[user_id][Keys.USERNAME.value] == username:
+                return True
+        return False
 
     @staticmethod
     def set_counting_channel(guild_id: int, channel_id: int):
