@@ -32,6 +32,7 @@ class CommandLogger(commands.Cog):
 
     @commands.Cog.listener()
     async def on_interaction(self, interaction: discord.Interaction):
+        logging.info(f"Command /{interaction.command.name} has been executed by {interaction.user.id}")
         self.update_user_data(interaction)
         self.update_guild_data(interaction)
 
