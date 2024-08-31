@@ -114,6 +114,8 @@ class DatabaseHelper:
         user = DatabaseHelper.get_user(user_id)
         if user is None:
             raise Exception("User not found")
+        # TODO: Double check the attribute in Firebase. 
+        # Problem: The attribute is not getting updated in the database
         db.reference(f"{Keys.USERS.value}/{user_id}/{Keys.TIMES_COUNTED.value}").set(
             user[Keys.TIMES_COUNTED.value] + 1
         )
