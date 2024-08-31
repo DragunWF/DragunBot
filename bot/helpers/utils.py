@@ -37,6 +37,7 @@ class Utils:
 
     @staticmethod
     def get_bot_dir_path() -> str:
+        # Returns the path "bot/"
         path = Path(__file__).resolve()
         while path.name != "bot":
             path = path.parent

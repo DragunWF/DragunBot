@@ -4,6 +4,7 @@ from discord.ext import commands
 
 from helpers.utils import Utils
 
+# TODO: Automate the process of changing all self.mono functions to just ``
 
 class CodeWars(commands.Cog):
     def __init__(self, bot: commands.Bot):

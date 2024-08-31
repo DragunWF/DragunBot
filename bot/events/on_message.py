@@ -34,9 +34,12 @@ class OnMessage(commands.Cog):
             return
         self.log_message_location(message)
         self.message_log(f'[{message.author}]: {message.content}')
+
+        # Counting game logging
         if CountingGame.is_counting_channel(message.guild.id, message.channel.id):
             if message.content.isdigit():
                 await CountingGame.count(message)
+
         await self.bot.process_commands(message)
 
     @commands.Cog.listener()
@@ -63,6 +66,7 @@ class OnMessage(commands.Cog):
     @commands.Cog.listener()
     @Debug.error_handler
     async def on_message_edit(self, before: discord.Message, after: discord.Message):
+        # This condition prevents logging messages with no edits and messages from bots
         if before.content != after.content and not before.author.bot:
             SessionData.record_edited_message(before, after)
             self.log_message_location(before)
