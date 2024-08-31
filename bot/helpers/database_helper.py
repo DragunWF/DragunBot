@@ -6,7 +6,7 @@ import firebase_admin
 from firebase_admin import db, credentials
 
 # Note: I set values to -1 as a default value for numeric values
-
+# TODO: Consider replacing DBC design with normal defensive programming
 
 class Keys(Enum):
     # Guilds Keys
