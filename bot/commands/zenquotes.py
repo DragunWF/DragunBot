@@ -24,18 +24,22 @@ class ZenQuotes(commands.Cog):
 
     @discord.app_commands.command(name="zenquote", description="Display a random zen quote")
     async def execute(self, interaction: discord.Interaction):
+        # Defer the interaction to avoid timeouts
+        await interaction.response.defer()
+
         quote = self.get_quote()
         if quote is None:
-            await interaction.response.send_message("Failed to fetch data from ZenQuotes server!",
-                                                    ephemeral=True)
+            await interaction.followup.send("Failed to fetch data from ZenQuotes server!",
+                                            ephemeral=True)
             return
+
         embed = discord.Embed(
             title="Zen Quote",
             description=f'_"{quote["q"]}"_ - {quote["a"]}',
             color=Utils.get_random_color()
         )
         embed.set_footer(text=f"Data fetched from {self.API_URL}")
-        await interaction.response.send_message(embed=embed)
+        await interaction.followup.send(embed=embed)
 
 
 async def setup(bot: commands.Bot):
