@@ -12,7 +12,7 @@ from helpers.database_helper import DatabaseHelper
 
 
 class Quiz(commands.Cog):
-    __rewards = {  # Via trivia points
+    __rewards = {  # The numbers indicate trivia points
         "easy": {"min": 5, "max": 10},
         "medium": {"min": 15, "max": 25},
         "hard": {"min": 40, "max": 60}
@@ -95,30 +95,38 @@ class Quiz(commands.Cog):
         app_commands.Choice(name="Hard", value="hard"),
     ])
     async def execute(self, interaction: discord.Interaction, category: int = None, difficulty: str = None):
+        # Defer the interaction to prevent timeout
+        await interaction.response.defer()
+
         data: dict[str, str | list[str]] | None = self.get_trivia_question(
             category, difficulty)
         if data is None:
-            await interaction.response.send_message("Failed to fetch trivia question data. Please try again later!")
+            await interaction.followup.send("Failed to fetch trivia question data. Please try again later!")
             return
+
         CORRECT_ANSWER = html.unescape(data["correct_answer"])
-        options = [*[html.unescape(answer) for answer in data["incorrect_answers"]],
-                   CORRECT_ANSWER]
+        options = [
+            *[html.unescape(answer) for answer in data["incorrect_answers"]], CORRECT_ANSWER]
         random.shuffle(options)
 
-        embed = discord.Embed(title="Trivia Question",
-                              color=Utils.get_random_color())
+        embed = discord.Embed(
+            title="Trivia Question",
+            color=Utils.get_random_color()
+        )
         embed.add_field(name="Difficulty",
                         value=data["difficulty"].capitalize())
         embed.add_field(name="Category",
                         value=self.format_category_name(data["category"]))
         embed.add_field(name="Question",
-                        value=html.unescape(data["question"]),
-                        inline=False)
+                        value=html.unescape(data["question"]), inline=False
+                        )
         embed.set_footer(text=f"Data fetched from {self.API_URL}")
-        await interaction.response.send_message(embed=embed,
-                                                view=TriviaView(CORRECT_ANSWER,
-                                                                options, interaction.user.id,
-                                                                data["difficulty"]))
+
+        await interaction.followup.send(
+            embed=embed,
+            view=TriviaView(CORRECT_ANSWER, options,
+                            interaction.user.id, data["difficulty"])
+        )
 
 
 class TriviaButton(discord.ui.Button):
