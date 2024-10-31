@@ -31,7 +31,7 @@ class CodeWars(commands.Cog):
         url = f"https://www.codewars.com/api/v1/users/{username}"
         response = requests.get(url)
         if response.status_code != 200:
-            await interaction.followup.send(f'Failed to fetch data for "{username}". ' +
+            await interaction.followup.send(f'Failed to fetch data for `{username}`, user does not exist! ' +
                                             "Make sure you typed in the correct username!",
                                             ephemeral=True)
             return
