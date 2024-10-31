@@ -4,7 +4,6 @@ from discord.ext import commands
 
 from helpers.utils import Utils
 
-# TODO: Automate the process of changing all self.mono functions to just ``
 
 class CodeWars(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -23,46 +22,44 @@ class CodeWars(commands.Cog):
     def get_languages(self) -> str:
         return [language for language in self.languages]
 
-    def mono(self, text: str) -> str:
-        return f"`{text}`"  # Turns text to monospace font via Discord markdown
-
     @discord.app_commands.command(name="codewars", description="Display the stats of a given user")
     @discord.app_commands.describe(username="The username of the CodeWars account")
     async def execute(self, interaction: discord.Interaction, username: str):
+        # Defer the response to avoid timeouts
+        await interaction.response.defer()
+
         url = f"https://www.codewars.com/api/v1/users/{username}"
         response = requests.get(url)
         if response.status_code != 200:
-            await interaction.response.send_message(f'Failed to fetch data for "{username}". ' +
-                                                    "Make sure you typed in the correct username!",
-                                                    ephemeral=True)
+            await interaction.followup.send(f'Failed to fetch data for "{username}". ' +
+                                            "Make sure you typed in the correct username!",
+                                            ephemeral=True)
             return
 
         self.data = response.json()
         self.languages = self.data["ranks"]["languages"]
-        embed = discord.Embed(title=f"CodeWars Stats",
+        embed = discord.Embed(title="CodeWars Stats",
                               color=Utils.get_color("red"))
-        embed.add_field(name="Username",
-                        value=self.mono(username), inline=False)
+        embed.add_field(name="Username", value=f"`{username}`", inline=False)
         embed.add_field(name="Honor",
-                        value=self.mono(Utils.format_num(self.data["honor"])))
+                        value=f"`{Utils.format_num(self.data['honor'])}`")
         embed.add_field(name="Rank",
-                        value=self.mono(self.data["ranks"]["overall"]["name"].title()))
+                        value=f"`{self.data['ranks']['overall']['name'].title()}`")
         embed.add_field(name="Leaderboard",
-                        value=self.mono(f"Top #{Utils.format_num(self.data['leaderboardPosition'])}"))
+                        value=f"`Top #{Utils.format_num(self.data['leaderboardPosition'])}`" if self.data["leaderboardPosition"] else f"`None`")
         embed.add_field(name="Katas Solved",
-                        value=self.mono(Utils.format_num(self.data["codeChallenges"]["totalCompleted"])))
+                        value=f"`{Utils.format_num(self.data['codeChallenges']['totalCompleted'])}`")
         embed.add_field(name="Most Used",
-                        value=self.mono(self.get_most_used_language()))
+                        value=f"`{self.get_most_used_language()}`")
         embed.add_field(name="Clan",
-                        value=self.mono(self.data["clan"] if self.data["clan"] else "None"))
+                        value=f"`{self.data['clan'] if self.data['clan'] else 'None'}`")
         embed.add_field(name="Programming Languages",
-                        value=", ".join(self.get_languages()),
-                        inline=False)
+                        value=", ".join(self.get_languages()), inline=False)
         embed.add_field(name="Profile Link",
-                        value=f"https://www.codewars.com/users/{username}",
-                        inline=False)
+                        value=f"https://www.codewars.com/users/{username}", inline=False)
         embed.set_footer(text=f"Data fetched from {url}")
-        await interaction.response.send_message(embed=embed)
+
+        await interaction.followup.send(embed=embed)
 
 
 async def setup(bot: commands.Bot):
