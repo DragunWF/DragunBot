@@ -15,7 +15,7 @@ To explore the full list of available commands, simply type `/help`.
 Use `python3` at the start of the command for Linux or macOS.
 
 ```shell
-python "bot/bot.py"
+python "bot/main.py"
 ```
 
 ### Install `requirements.txt`
