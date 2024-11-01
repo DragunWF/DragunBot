@@ -6,7 +6,7 @@ import firebase_admin
 from firebase_admin import db, credentials
 
 # Note: I set values to -1 as a default value for numeric values
-# TODO: Consider replacing DBC design with normal defensive programming
+
 
 class Keys(Enum):
     # Guilds Keys
@@ -129,7 +129,7 @@ class DatabaseHelper:
         current_points = user_ref.child(Keys.TRIVIA_POINTS.value).get()
         user_ref.update({Keys.TRIVIA_POINTS.value: current_points + points})
         logging.info(f"Added {points} trivia points to <{user_id}>")
-    
+
     @staticmethod
     def add_user_times_counted(user_id: int):
         assert type(user_id) is int
@@ -137,13 +137,14 @@ class DatabaseHelper:
         current_counts = user_ref.child(Keys.TIMES_COUNTED.value).get()
         UPDATED_COUNT = current_counts + 1
         user_ref.update({Keys.TIMES_COUNTED.value: UPDATED_COUNT})
-        logging.info(f'Updated "{Keys.TIMES_COUNTED.value}" to {UPDATED_COUNT} for user: <@{user_id}>')
+        logging.info(
+            f'Updated "{Keys.TIMES_COUNTED.value}" to {UPDATED_COUNT} for user: <@{user_id}>')
 
     @staticmethod
     def is_user_exists(user_id: int) -> bool:
         assert type(user_id) is int
         return str(user_id) in db.reference(Keys.USERS.value).get()
-    
+
     @staticmethod
     def is_username_exists(username: str) -> bool:
         assert type(user_id) is int
