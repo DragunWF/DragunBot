@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-
 from helpers.utils import Utils
 
 
@@ -19,11 +18,21 @@ class Help(commands.Cog):
 
     @discord.app_commands.command(name="help", description="Show the list of slash commands")
     async def execute(self, interaction: discord.Interaction):
-        embed = discord.Embed(title="List of Commands",
-                              color=Utils.get_color("royal blue"))
-        embed.add_field(name="Commands",
-                        value=await self.generate_command_list())
-        await interaction.response.send_message(embed=embed)
+        # Defer the interaction response to prevent timeout
+        await interaction.response.defer()
+
+        # Generate command list and prepare the embed
+        embed = discord.Embed(
+            title="List of Commands",
+            color=Utils.get_color("royal blue")
+        )
+        embed.add_field(
+            name="Commands",
+            value=await self.generate_command_list()
+        )
+
+        # Send the message after generating the content
+        await interaction.followup.send(embed=embed)
 
 
 async def setup(bot: commands.Bot):
