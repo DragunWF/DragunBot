@@ -15,8 +15,8 @@ class Confess(commands.Cog):
     @discord.app_commands.command(name="confess", description="Submit a confession")
     @discord.app_commands.describe(message="The contents of your confession")
     async def confess(self, interaction: discord.Interaction, message: str):
-        # Acknowledge the interaction to prevent timeout
-        await interaction.response.send_message("Processing your confession...", ephemeral=True)
+        # Defer the interaction to prevent timeout
+        await interaction.response.defer(ephemeral=True)
 
         channel_id = DatabaseHelper.get_confessions_channel(
             interaction.guild_id)
