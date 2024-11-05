@@ -4,6 +4,7 @@ from discord.ext import commands
 
 from helpers.debug import Debug
 from helpers.database_helper import DatabaseHelper
+from helpers.session_data import SessionData
 
 
 class OnReady(commands.Cog):
@@ -24,8 +25,7 @@ class OnReady(commands.Cog):
         await self.bot.tree.sync()
         logging.info("Commands have been synchronized")
         await self.bot.change_presence(
-            activity=discord.Activity(type=discord.ActivityType.listening,
-                                      name="my overlord...")
+            activity=SessionData.get_discord_status()
         )
         logging.info("Bot status has been set!")
         self.update_guilds_data()

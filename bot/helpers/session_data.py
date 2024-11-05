@@ -5,6 +5,12 @@ from queue import LifoQueue
 class SessionData:
     __deleted_messages: dict[int, LifoQueue] = {}
     __edited_messages: dict[int, LifoQueue] = {}
+    __discord_status: discord.Activity = discord.Activity(type=discord.ActivityType.listening,
+                                                          name="my overlord...")
+
+    @staticmethod
+    def get_discord_status() -> discord.Activity:
+        return SessionData.__discord_status
 
     @staticmethod
     def get_recent_deleted_message(guild_id: int) -> discord.Message | None:
