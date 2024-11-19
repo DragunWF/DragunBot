@@ -9,7 +9,8 @@ from helpers.session_data import SessionData
 class HeartbeatCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.heartbeat.start()  # Start the background task
+        # Note: Temporarily disabled to prevent getting API requests getting limited
+        # self.heartbeat.start()  # Start the background task
         self.heartbeats = 0
 
     @tasks.loop(minutes=15)  # Run every 15 minutes
