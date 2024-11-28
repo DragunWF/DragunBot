@@ -17,6 +17,7 @@ class Setup(commands.Cog):
             await interaction.response.send_message("You must be an admin to use this command!")
             return
 
+        # Embed message data
         embed = discord.Embed(title="Counting channel has been designated to this channel!",
                               color=Utils.get_color("royal blue"))
         embed.add_field(name="How to Play the Counting Game",
@@ -30,6 +31,8 @@ class Setup(commands.Cog):
         embed.set_footer(
             text='1️⃣ No need to type any command, just type the number to start counting!'
         )
+        
+        # Database updates and response
         DatabaseHelper.set_counting_channel(
             interaction.guild_id, interaction.channel_id
         )
@@ -42,6 +45,7 @@ class Setup(commands.Cog):
             await interaction.response.send_message("You must be an admin to use this command!")
             return
 
+        # Embed message data
         embed = discord.Embed(title="Confessions channel has been setup!",
                               color=Utils.get_color("royal blue"))
         embed.add_field(name="Command to send a confession",
@@ -58,6 +62,8 @@ class Setup(commands.Cog):
         embed.set_footer(
             text="☄️ If you have any suggestions for this feature; please message the developer, dragunwf."
         )
+
+        # Database updates and send message functionality
         DatabaseHelper.set_confessions_channel(
             interaction.guild_id, interaction.channel_id
         )

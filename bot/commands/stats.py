@@ -12,6 +12,8 @@ class Stats(commands.Cog):
     @discord.app_commands.command(name="stats", description="Check the user's stats")
     # @discord.app_commands.describe(username="The Discord username of the user you want to check")
     async def execute(self, interaction: discord.Interaction):
+        # TODO: Implement this functionality
+
         # add username parameter when you start developing
         await interaction.response.send_message("Command is still in development!")
 

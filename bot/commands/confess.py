@@ -18,6 +18,7 @@ class Confess(commands.Cog):
         # Defer the interaction to prevent timeout
         await interaction.response.defer(ephemeral=True)
 
+        # Input Validation
         channel_id = DatabaseHelper.get_confessions_channel(
             interaction.guild_id)
         if channel_id is None:
@@ -40,6 +41,7 @@ class Confess(commands.Cog):
             text=f"{random.choice(self.footer_emojis)} If you want to send your own confession, simply type /confess"
         )
 
+        # Database update and message send functionality
         DatabaseHelper.add_confession(
             guild_id=interaction.guild_id,
             author_id=interaction.user.id,

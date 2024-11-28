@@ -36,8 +36,11 @@ class CodeWars(commands.Cog):
                                             ephemeral=True)
             return
 
+        # Data from the API
         self.data = response.json()
         self.languages = self.data["ranks"]["languages"]
+
+        # Embed message data
         embed = discord.Embed(title="CodeWars Stats",
                               color=Utils.get_color("red"))
         embed.add_field(name="Username", value=f"`{username}`", inline=False)
