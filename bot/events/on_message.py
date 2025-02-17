@@ -7,7 +7,8 @@ from helpers.utils import Utils
 from helpers.session_data import SessionData
 from helpers.debug import Debug
 from helpers.database_helper import DatabaseHelper, Keys
-from misc.counting_game import CountingGame
+from services.counting_game import CountingGame
+from services.ai_chatbot import AIChatbot
 
 
 class OnMessage(commands.Cog):
@@ -39,6 +40,10 @@ class OnMessage(commands.Cog):
         if CountingGame.is_counting_channel(message.guild.id, message.channel.id):
             if message.content.isdigit():
                 await CountingGame.count(message)
+
+        # AI Chatbot Service
+        if AIChatbot.is_ai_channel(message.guild.id, message.channel.id):
+            await AIChatbot.on_user_message(message)
 
         await self.bot.process_commands(message)
 

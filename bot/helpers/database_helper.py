@@ -203,6 +203,10 @@ class DatabaseHelper:
         )
 
     @staticmethod
+    def get_ai_channel(guild_id: int) -> int | None:
+        return DatabaseHelper.__get_channel(guild_id, Keys.AI_CHANNEL.value)
+
+    @staticmethod
     def set_ai_channel(guild_id: int, channel_id: int):
         DatabaseHelper.__set_channel(guild_id, channel_id,
                                      Keys.AI_CHANNEL.value)

@@ -10,6 +10,49 @@ class Setup(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
+    @discord.app_commands.command(
+        name="setup_ai",
+        description="Setup a channel where DragunBot can speak freely."
+    )
+    async def setup_ai(self, interaction: discord.Interaction):
+        if not interaction.user.guild_permissions.administrator:
+            await interaction.response.send_message(
+                "You must be an admin to use this command!", ephemeral=True
+            )
+            return
+
+        embed = discord.Embed(
+            title="AI Channel Setup Complete! 🤖",
+            description=(
+                "This channel is now designated for AI interactions with DragunBot, powered by Gemini! "
+                "Feel free to ask questions, seek advice, or have fun conversations. "
+                "However, please follow the guidelines below to ensure a positive experience."
+            ),
+            color=discord.Color.blue()
+        )
+
+        embed.add_field(
+            name="📜 Rules & Guidelines",
+            value=(
+                "- ✅ Be respectful—no harassment, hate speech, or inappropriate content.\n"
+                "- ✅ Keep discussions relevant—avoid excessive spam or off-topic messages.\n"
+                "- ✅ No illegal, unethical, or harmful requests.\n"
+                "- ✅ AI-generated responses are not always accurate—fact-check when necessary.\n"
+                "- ✅ Moderators reserve the right to intervene if needed."
+            ),
+            inline=False
+        )
+
+        embed.set_footer(
+            text="By using this AI channel, you agree to follow these guidelines."
+        )
+
+        DatabaseHelper.set_ai_channel(
+            interaction.guild_id, interaction.channel_id
+        )
+
+        await interaction.response.send_message(embed=embed)
+
     @discord.app_commands.command(name="setup_counting",
                                   description="Setup a counting channel. Enter this command in the channel you want to designate")
     async def setup_counting(self, interaction: discord.Interaction):
@@ -31,7 +74,7 @@ class Setup(commands.Cog):
         embed.set_footer(
             text='1️⃣ No need to type any command, just type the number to start counting!'
         )
-        
+
         # Database updates and response
         DatabaseHelper.set_counting_channel(
             interaction.guild_id, interaction.channel_id
