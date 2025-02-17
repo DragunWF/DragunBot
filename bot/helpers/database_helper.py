@@ -16,6 +16,7 @@ class Keys(Enum):
     COUNTING_CHANNEL = "counting_channel"
     CONFESSIONS = "confessions"
     COUNTING = "counting"
+    AI_CHANNEL = "ai_channel"
 
     # Counting keys
     LAST_USER_ID = "last_user_id"
@@ -199,6 +200,14 @@ class DatabaseHelper:
         )
         logging.info(
             f"Updated counting high score for guild: <{guild_id}> to {high_score}"
+        )
+
+    @staticmethod
+    def set_ai_channel(guild_id: int, channel_id: int):
+        DatabaseHelper.__set_channel(guild_id, channel_id,
+                                     Keys.AI_CHANNEL.value)
+        logging.info(
+            f"Set <#{channel_id}> as AI channel for guild: <{guild_id}>"
         )
 
     @staticmethod
