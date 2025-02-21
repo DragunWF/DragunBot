@@ -35,6 +35,7 @@ pipenv requirements > requirements.txt
 - [ZenQuotes](https://zenquotes.io/)
 - [The Trivia API](https://the-trivia-api.com/)
 - [CodeWars API](https://dev.codewars.com/)
+- [Gemini API](https://ai.google.dev/)
 
 ## NoSQL Database Structure
 
