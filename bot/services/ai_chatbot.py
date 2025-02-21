@@ -41,7 +41,7 @@ class AIChatbot:
 
     @staticmethod
     def __add_to_conversation_history(content: str, author: str, guild_id: int) -> None:
-        DIALOGUE_LIMIT = 10
+        DIALOGUE_LIMIT = 15
 
         history: list = AIChatbot.__conversation_history[guild_id]
         history.append(f"{author}: {content}")
