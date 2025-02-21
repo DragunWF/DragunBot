@@ -44,6 +44,8 @@ class OnMessage(commands.Cog):
         # AI Chatbot Service
         if AIChatbot.is_ai_channel(message.guild.id, message.channel.id):
             await AIChatbot.on_user_message(message)
+        elif self.bot.user in message.mentions:
+            await AIChatbot.on_bot_ping(message)
 
         await self.bot.process_commands(message)
 

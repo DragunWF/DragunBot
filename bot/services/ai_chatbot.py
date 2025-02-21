@@ -12,14 +12,22 @@ genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
 
 
 class AIChatbot:
+    __DIALOGUE_LIMIT = 15
     __conversation_history = {}
 
     @staticmethod
     def is_ai_channel(guild_id: int, channel_id: int) -> bool:
+        """
+        Checks if a channel is configured as the AI channel of a Discord guild
+        """
         return DatabaseHelper.get_ai_channel(guild_id) == channel_id
 
     @staticmethod
-    async def on_user_message(message: discord.Message):
+    async def on_user_message(message: discord.Message) -> None:
+        """
+        A method that should be called whenever a user sends a message to a Discord guild.
+        This method allows the AI Chatbot to respond to a user on the configured AI channel.
+        """
         if message.guild.id not in AIChatbot.__conversation_history:
             AIChatbot.__conversation_history[message.guild.id] = []
 
@@ -40,12 +48,14 @@ class AIChatbot:
         await message.channel.send(ai_response)
 
     @staticmethod
-    def __add_to_conversation_history(content: str, author: str, guild_id: int) -> None:
-        DIALOGUE_LIMIT = 15
+    async def on_bot_ping(message: discord.Message) -> None:
+        history = [message async for message in message.channel.history(limit=AIChatbot.__DIALOGUE_LIMIT)]
 
+    @staticmethod
+    def __add_to_conversation_history(content: str, author: str, guild_id: int) -> None:
         history: list = AIChatbot.__conversation_history[guild_id]
         history.append(f"{author}: {content}")
-        if len(history) > DIALOGUE_LIMIT:
+        if len(history) > AIChatbot.__DIALOGUE_LIMIT:
             history.pop(0)
 
     @staticmethod
