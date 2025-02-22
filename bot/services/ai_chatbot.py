@@ -12,6 +12,7 @@ genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
 
 
 class AIChatbot:
+    __AI_MODEL_NAME = "gemini-pro"
     __DIALOGUE_LIMIT = 15
     __conversation_history = {}
 
@@ -28,18 +29,15 @@ class AIChatbot:
         A method that should be called whenever a user sends a message to a Discord guild.
         This method allows the AI Chatbot to respond to a user on the configured AI channel.
         """
-        if message.guild.id not in AIChatbot.__conversation_history:
-            AIChatbot.__conversation_history[message.guild.id] = []
-
         AIChatbot.__add_to_conversation_history(
             message.content, message.author.name, message.guild.id
         )
 
-        prompt = AIChatbot.__get_predefined_prompt(message)
+        conversation_history = AIChatbot.__compile_conversation_history_by_id(
+            message.guild.id
+        )
+        prompt = AIChatbot.__get_predefined_prompt(conversation_history)
         ai_response = AIChatbot.__gemini_response(prompt)
-
-        # Remove "DragunBot (You): " if it appears in the response
-        ai_response = ai_response.replace("DragunBot (You): ", "").strip()
 
         AIChatbot.__add_to_conversation_history(
             ai_response, "DragunBot (You)", message.guild.id
@@ -49,17 +47,35 @@ class AIChatbot:
 
     @staticmethod
     async def on_bot_ping(message: discord.Message) -> None:
-        history = [message async for message in message.channel.history(limit=AIChatbot.__DIALOGUE_LIMIT)]
+        """
+        Responds to a message when the bot is pinged.
+        """
+        history: list[discord.Message] = [message async for message in message.channel.history(limit=AIChatbot.__DIALOGUE_LIMIT)]
+        conversation_history = []
+        for channel_message in history:
+            conversation_history.append(
+                f"{channel_message.author.name}: {channel_message.content}"
+            )
+
+        prompt = AIChatbot.__get_predefined_prompt(
+            AIChatbot.__compile_conversation_history(conversation_history)
+        )
+        ai_response = AIChatbot.__gemini_response(prompt)
+
+        await message.channel.send(ai_response)
 
     @staticmethod
     def __add_to_conversation_history(content: str, author: str, guild_id: int) -> None:
+        if guild_id not in AIChatbot.__conversation_history:
+            AIChatbot.__conversation_history[guild_id] = []
+
         history: list = AIChatbot.__conversation_history[guild_id]
         history.append(f"{author}: {content}")
         if len(history) > AIChatbot.__DIALOGUE_LIMIT:
             history.pop(0)
 
     @staticmethod
-    def __get_predefined_prompt(message: discord.Message) -> str:
+    def __get_predefined_prompt(conversation_history: str) -> str:
         servant_prompt = f"""
 You are DragunBot, a loyal and knowledgeable AI assistant, serving as the trusted aide of your master in his grand castle on Discord.
 Your purpose is to assist users with wisdom, wit, and respect, while adopting the mannerisms of a refined servant in a fantasy Renaissance setting.
@@ -77,18 +93,26 @@ Your purpose is to assist users with wisdom, wit, and respect, while adopting th
 - **Keep responses concise and ensure they do not exceed 2000 characters. If necessary, summarize long explanations.**
 
 ### Conversation History:
-{AIChatbot.__compile_conversation_history(message.guild.id)}
+{conversation_history}
 """
         return servant_prompt
 
     @staticmethod
-    def __compile_conversation_history(guild_id: int) -> str:
+    def __compile_conversation_history_by_id(guild_id: int) -> str:
         history: list = AIChatbot.__conversation_history[guild_id]
         return "\n".join(history)
 
     @staticmethod
+    def __compile_conversation_history(conversation_history: list[str]) -> str:
+        return "\n".join(conversation_history)
+
+    @staticmethod
     def __gemini_response(prompt) -> str:
-        """Send a prompt to Gemini API and return the response."""
-        model = genai.GenerativeModel("gemini-pro")
+        """
+        Send a prompt to Gemini API and return the response.
+        """
+        model = genai.GenerativeModel(AIChatbot.__AI_MODEL_NAME)
         response = model.generate_content(prompt)
-        return response.text
+
+        # Removes conversation prefix from response
+        return response.text.replace("DragunBot (You): ", "").strip()
