@@ -99,8 +99,8 @@ Your purpose is to assist users with wisdom, wit, and respect, while adopting th
 
     @staticmethod
     def __compile_conversation_history_by_id(guild_id: int) -> str:
-        history: list = AIChatbot.__conversation_history[guild_id]
-        return "\n".join(history)
+        history: list[str] = AIChatbot.__conversation_history[guild_id]
+        return AIChatbot.__compile_conversation_history(history)
 
     @staticmethod
     def __compile_conversation_history(conversation_history: list[str]) -> str:
