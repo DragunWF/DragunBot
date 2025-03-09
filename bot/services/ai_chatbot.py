@@ -12,7 +12,7 @@ genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
 
 
 class AIChatbot:
-    __AI_MODEL_NAME = "gemini-pro"
+    __AI_MODEL_NAME = "models/gemini-2.0-flash"
     __DIALOGUE_LIMIT = 15
     __conversation_history = {}
 
