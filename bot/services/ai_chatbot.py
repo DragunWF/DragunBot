@@ -16,6 +16,9 @@ class AIChatbot:
     __DIALOGUE_LIMIT = 15
     __conversation_history = {}
 
+    __MESSAGE_CHAR_LIMIT = 2000
+    __EMBED_CHAR_LIMIT = 4096
+
     @staticmethod
     def is_ai_channel(guild_id: int, channel_id: int) -> bool:
         """
@@ -39,11 +42,19 @@ class AIChatbot:
         prompt = AIChatbot.__get_predefined_prompt(conversation_history)
         ai_response = AIChatbot.__gemini_response(prompt)
 
+        if len(ai_response) > AIChatbot.__EMBED_CHAR_LIMIT:
+            message_cutoff = AIChatbot.__EMBED_CHAR_LIMIT - 5
+            ai_response = f"{ai_response[0:message_cutoff]}-----"
+        elif len(ai_response) > AIChatbot.__MESSAGE_CHAR_LIMIT:
+            await message.channel.send(embed=discord.Embed(
+                description=ai_response
+            ))
+        else:
+            await message.channel.send(ai_response)
+
         AIChatbot.__add_to_conversation_history(
             ai_response, "DragunBot (You)", message.guild.id
         )
-
-        await message.channel.send(ai_response)
 
     @staticmethod
     async def on_bot_ping(message: discord.Message) -> None:
@@ -76,9 +87,9 @@ class AIChatbot:
 
     @staticmethod
     def __get_predefined_prompt(conversation_history: str) -> str:
-        servant_prompt = f"""
-You are DragunBot, a loyal and knowledgeable AI assistant, serving as the trusted aide of your master in his grand castle on Discord.
-Your purpose is to assist users with wisdom, wit, and respect, while adopting the mannerisms of a refined servant in a fantasy Renaissance setting.
+        safe_message_char_limit = AIChatbot.__MESSAGE_CHAR_LIMIT - 100
+        safe_embed_char_limit = AIChatbot.__EMBED_CHAR_LIMIT - 96
+        servant_prompt = f""" You are DragunBot, a loyal and knowledgeable AI assistant, serving as the trusted aide of your master in his grand castle on Discord. Your purpose is to assist users with wisdom, wit, and respect, while adopting the mannerisms of a refined servant in a fantasy Renaissance setting.
 
 ### Role & Behavior:
 - When addressing your master, **{ConfigManager.owner_username()}**, you should respond with utmost reverence, as a devoted servant would to their liege.
@@ -90,7 +101,16 @@ Your purpose is to assist users with wisdom, wit, and respect, while adopting th
 - Speak in a manner befitting a Renaissance court, using respectful yet playful phrasing.
 - Avoid modern slang or overly technical jargon—your words should feel timeless and fitting for a high-fantasy realm.
 - **Do not prefix your responses with "DragunBot (You):" or any similar indicator. Simply reply with your response without adding a speaker label.**
-- **Keep responses concise and ensure they do not exceed 2000 characters. If necessary, summarize long explanations.**
+- **Keep responses concise. Your responses MUST remain under {AIChatbot.__MESSAGE_CHAR_LIMIT} characters at all times to comply with Discord limitations.**
+- **If your response risks exceeding {safe_message_char_limit} characters, immediately condense your answer to fit within this limit.**
+- **Only in exceptional circumstances where complex information must be conveyed, you may use up to {safe_embed_char_limit} characters, but never exceed Discord's {AIChatbot.__EMBED_CHAR_LIMIT} character limit.**
+- **When providing lengthy information, consider breaking it into multiple shorter messages rather than a single long one.**
+
+### Character Count Management:
+- Before sending any response, verify its length.
+- Prioritize brevity and clarity in all communications.
+- For longer explanations, focus on the most essential information first.
+- Offer to provide additional details upon request rather than in the initial response.
 
 ### Conversation History:
 {conversation_history}
