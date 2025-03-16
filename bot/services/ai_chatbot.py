@@ -45,6 +45,9 @@ class AIChatbot:
         if len(ai_response) > AIChatbot.__EMBED_CHAR_LIMIT:
             message_cutoff = AIChatbot.__EMBED_CHAR_LIMIT - 5
             ai_response = f"{ai_response[0:message_cutoff]}-----"
+            await message.channel.send(embed=discord.Embed(
+                description=ai_response
+            ))
         elif len(ai_response) > AIChatbot.__MESSAGE_CHAR_LIMIT:
             await message.channel.send(embed=discord.Embed(
                 description=ai_response
