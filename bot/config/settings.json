@@ -4,7 +4,7 @@
     "username": "dragunwf"
   },
   "development": {
-    "test_mode": true,
+    "test_mode": false,
     "log_file_enabled": true
   },
   "bot": {
