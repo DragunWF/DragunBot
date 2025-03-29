@@ -39,7 +39,8 @@ class AIChatbot:
         conversation_history = AIChatbot.__compile_conversation_history_by_id(
             message.guild.id
         )
-        prompt = AIChatbot.__get_predefined_prompt(conversation_history)
+        prompt = AIChatbot.__get_predefined_prompt(
+            conversation_history, message.content)
         ai_response = AIChatbot.__gemini_response(prompt)
 
         if len(ai_response) > AIChatbot.__EMBED_CHAR_LIMIT:
@@ -71,8 +72,12 @@ class AIChatbot:
                 f"{channel_message.author.name}: {channel_message.content}"
             )
 
+        # Reverse the history so the most recent messages are at the end
+        conversation_history.reverse()
+
         prompt = AIChatbot.__get_predefined_prompt(
-            AIChatbot.__compile_conversation_history(conversation_history)
+            AIChatbot.__compile_conversation_history(conversation_history),
+            message.content
         )
         ai_response = AIChatbot.__gemini_response(prompt)
 
@@ -89,7 +94,7 @@ class AIChatbot:
             history.pop(0)
 
     @staticmethod
-    def __get_predefined_prompt(conversation_history: str) -> str:
+    def __get_predefined_prompt(conversation_history: str, current_message: str = "") -> str:
         safe_message_char_limit = AIChatbot.__MESSAGE_CHAR_LIMIT - 100
         safe_embed_char_limit = AIChatbot.__EMBED_CHAR_LIMIT - 96
         servant_prompt = f""" You are DragunBot, a loyal and knowledgeable AI assistant, serving as the trusted aide of your master in his grand castle on Discord. Your purpose is to assist users with wisdom, wit, and respect, while adopting the mannerisms of a refined servant in a fantasy Renaissance setting.
@@ -117,6 +122,9 @@ class AIChatbot:
 
 ### Conversation History:
 {conversation_history}
+
+### IMPORTANT: The following is the most recent message you must respond to now:
+{current_message}
 """
         return servant_prompt
 
